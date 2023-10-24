@@ -1,13 +1,18 @@
 ---
 title: "Introduction to Bulk RNAseq data analysis"
-subtitle: Quantification of Gene Expression with Salmon
 output:
-  html_document: default
-  pdf_document: default
+  html_document:
+    toc: yes
+    toc_float: true
+    css: ../css/boxes.css
+  pdf_document:
+    toc: yes
 bibliography: ref.bib
 ---
 
-# Quasi-mapping and gene expression quantification
+# Quantification of Gene Expression with Salmon
+
+## Quasi-mapping and gene expression quantification
 
 So far we have QC'd our raw reads, and the next step is to quantify the gene
 expression. One way would be to map the reads to the genome and use information
@@ -38,7 +43,8 @@ This provides much more information about various options and the reasons for
 using them. For most purposes we can simply use the default settings with just
 a few extras.
 
-# 1. Indexing the transcriptome for Salmon
+
+## Transcriptome indexing
 
 Salmon encompasses both alignment and quantification in a single tool. Here we
 will be aligning directly to the transcriptome rather than the genome. The transcriptome
@@ -66,7 +72,7 @@ The full transcriptome has been downloaded from Ensembl:
 
 ftp://ftp.ensembl.org/pub/release-102/fasta/mus_musculus/cdna/Mus_musculus.GRCm38.cdna.all.fa.gz
 
-## Indexing the transcriptome
+### Indexing the transcriptome
 
 We are going to be giving Salmon both genomic and transcriptomic sequences to
 index. First we need to create a single fasta file that contains both sets of 
@@ -80,41 +86,252 @@ Finally, we will need to provide salmon with the name of a directory in which to
 create the index. We don't need to make the directory, salmon will do this
 itself.
 
-## Exercise 1 - Create Salmon index
-> 1. Create concatenated trancriptome/genome reference file
->```{bash eval=FALSE}
->cat references/Mus_musculus.GRCm38.cdna.chr14.fa.gz \
->    references/Mus_musculus.GRCm38.dna_sm.chr14.fa.gz \
->    > references/gentrome.chr14.fa.gz
->```
-> 2. Create decoy sequence list from the genomic fasta
->```{bash eval=FALSE}
->echo "14" > references/decoys.txt
->```
-> 3. Use `salmon index` to create the index. You will need to provide three
->  pieces of information:
->     * the **Transcript fasta file** - *references/gentrome.chr14.fa.gz*
->     * the **decoys** - *references/decoys.txt*
->     * the **salmon index** - a directory to write the index to, use **references/salmon_index_chr14**  
->
-> Also add `-p 7` to the command to instruct salmon to use 7 threads/cores.
-> To find the flags for the other three pieces of information use:
->```{bash eval=FALSE}
->salmon index --help
->```
->
-> One thing to note here is that we have not specified the `-k` parameter. This
-> parameter sets the kmer size that the index will be based on and relates to
-> the minimum size of kmer used for quasi-mapping. The default is 31 bases, and
-> this is fine for read sizes over 75 bases. If your read size is less that 75,
-> you would need to adjust this. You should set the kmer size to slightly less
-> than half of the read length. Quasi-mapping looks for kmers that are perfect
-> match to the reference sequence. If the kmer size is more than half the read
-> length, then a read with a mismatch in the middle of the read will never be
-> able to be mapped to the transcriptome, even if all other bases are a perfect
-> match for the sequence at the location that it originated.
 
-# 2. Gene expression quantification
+### Exercise 1 - Create Salmon index
+
+:::exercise
+
+1. Create concatenated trancriptome/genome reference file
+
+    ```bash
+    cat references/Mus_musculus.GRCm38.cdna.chr14.fa.gz references/Mus_musculus.GRCm38.dna_sm.chr14.fa.gz > references/gentrome.chr14.fa.gz
+    ```
+
+3. Create decoy sequence list from the genomic fasta
+
+    ```bash
+    echo "14" > references/decoys.txt
+    ```
+
+4. Use `salmon index` to create the index. You will need to provide three pieces of information:
+    * the **transcript fasta file** - `references/gentrome.chr14.fa.gz`
+    * the **decoys** - `references/decoys.txt`
+    * the **salmon index** - a directory to write the index to, use `references/salmon_index_chr14`
+   Also add `-p 7` to the command to instruct salmon to use 7 threads/cores.
+   To find the option names for the other three pieces of information use `salmon index --help`
+
+One thing to note here is that we have not specified the `-k` parameter. This
+parameter sets the kmer size that the index will be based on and relates to
+the minimum size of kmer used for quasi-mapping. The default is 31 bases, and
+this is fine for read sizes over 75 bases. If your read size is less that 75,
+you would need to adjust this. You should set the kmer size to slightly less
+than half of the read length. Quasi-mapping looks for kmers that are perfect
+match to the reference sequence. If the kmer size is more than half the read
+length, then a read with a mismatch in the middle of the read will never be
+able to be mapped to the transcriptome, even if all other bases are a perfect
+match for the sequence at the location that it originated.
+
+<details><summary>Answer</summary>
+
+**1.**
+
+After running the `cat` command given, we can see that new file was created in the `references` directory: 
+
+```bash
+ls references
+```
+
+```
+TODO
+```
+
+**2.**
+
+The `echo` command we are given simply prints the number "14" (the chromosome number) to a text file. 
+So, the content of our file is simply: 
+
+```
+14
+```
+
+It is worth noting that we are doing this because we are only working with a single chromosome for demonstration purposes. 
+In a "real" analysis, we would be using all the chromosomes and so we should instead create a file with all the chromosome names in our reference genome. 
+We can check the chromosome names from the complete reference FASTA file: 
+
+```bash
+grep ">" references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa
+```
+
+<details><summary>Click to expand output</summary>
+
+```
+>1 dna_sm:chromosome chromosome:GRCm38:1:1:195471971:1 REF
+>10 dna_sm:chromosome chromosome:GRCm38:10:1:130694993:1 REF
+>11 dna_sm:chromosome chromosome:GRCm38:11:1:122082543:1 REF
+>12 dna_sm:chromosome chromosome:GRCm38:12:1:120129022:1 REF
+>13 dna_sm:chromosome chromosome:GRCm38:13:1:120421639:1 REF
+>14 dna_sm:chromosome chromosome:GRCm38:14:1:124902244:1 REF
+>15 dna_sm:chromosome chromosome:GRCm38:15:1:104043685:1 REF
+>16 dna_sm:chromosome chromosome:GRCm38:16:1:98207768:1 REF
+>17 dna_sm:chromosome chromosome:GRCm38:17:1:94987271:1 REF
+>18 dna_sm:chromosome chromosome:GRCm38:18:1:90702639:1 REF
+>19 dna_sm:chromosome chromosome:GRCm38:19:1:61431566:1 REF
+>2 dna_sm:chromosome chromosome:GRCm38:2:1:182113224:1 REF
+>3 dna_sm:chromosome chromosome:GRCm38:3:1:160039680:1 REF
+>4 dna_sm:chromosome chromosome:GRCm38:4:1:156508116:1 REF
+>5 dna_sm:chromosome chromosome:GRCm38:5:1:151834684:1 REF
+>6 dna_sm:chromosome chromosome:GRCm38:6:1:149736546:1 REF
+>7 dna_sm:chromosome chromosome:GRCm38:7:1:145441459:1 REF
+>8 dna_sm:chromosome chromosome:GRCm38:8:1:129401213:1 REF
+>9 dna_sm:chromosome chromosome:GRCm38:9:1:124595110:1 REF
+>MT dna_sm:chromosome chromosome:GRCm38:MT:1:16299:1 REF
+>X dna_sm:chromosome chromosome:GRCm38:X:1:171031299:1 REF
+>Y dna_sm:chromosome chromosome:GRCm38:Y:1:91744698:1 REF
+>JH584299.1 dna_sm:scaffold scaffold:GRCm38:JH584299.1:1:953012:1 REF
+>GL456233.1 dna_sm:scaffold scaffold:GRCm38:GL456233.1:1:336933:1 REF
+>JH584301.1 dna_sm:scaffold scaffold:GRCm38:JH584301.1:1:259875:1 REF
+>GL456211.1 dna_sm:scaffold scaffold:GRCm38:GL456211.1:1:241735:1 REF
+>GL456350.1 dna_sm:scaffold scaffold:GRCm38:GL456350.1:1:227966:1 REF
+>JH584293.1 dna_sm:scaffold scaffold:GRCm38:JH584293.1:1:207968:1 REF
+>GL456221.1 dna_sm:scaffold scaffold:GRCm38:GL456221.1:1:206961:1 REF
+>JH584297.1 dna_sm:scaffold scaffold:GRCm38:JH584297.1:1:205776:1 REF
+>JH584296.1 dna_sm:scaffold scaffold:GRCm38:JH584296.1:1:199368:1 REF
+>GL456354.1 dna_sm:scaffold scaffold:GRCm38:GL456354.1:1:195993:1 REF
+>JH584294.1 dna_sm:scaffold scaffold:GRCm38:JH584294.1:1:191905:1 REF
+>JH584298.1 dna_sm:scaffold scaffold:GRCm38:JH584298.1:1:184189:1 REF
+>JH584300.1 dna_sm:scaffold scaffold:GRCm38:JH584300.1:1:182347:1 REF
+>GL456219.1 dna_sm:scaffold scaffold:GRCm38:GL456219.1:1:175968:1 REF
+>GL456210.1 dna_sm:scaffold scaffold:GRCm38:GL456210.1:1:169725:1 REF
+>JH584303.1 dna_sm:scaffold scaffold:GRCm38:JH584303.1:1:158099:1 REF
+>JH584302.1 dna_sm:scaffold scaffold:GRCm38:JH584302.1:1:155838:1 REF
+>GL456212.1 dna_sm:scaffold scaffold:GRCm38:GL456212.1:1:153618:1 REF
+>JH584304.1 dna_sm:scaffold scaffold:GRCm38:JH584304.1:1:114452:1 REF
+>GL456379.1 dna_sm:scaffold scaffold:GRCm38:GL456379.1:1:72385:1 REF
+>GL456216.1 dna_sm:scaffold scaffold:GRCm38:GL456216.1:1:66673:1 REF
+>GL456393.1 dna_sm:scaffold scaffold:GRCm38:GL456393.1:1:55711:1 REF
+>GL456366.1 dna_sm:scaffold scaffold:GRCm38:GL456366.1:1:47073:1 REF
+>GL456367.1 dna_sm:scaffold scaffold:GRCm38:GL456367.1:1:42057:1 REF
+>GL456239.1 dna_sm:scaffold scaffold:GRCm38:GL456239.1:1:40056:1 REF
+>GL456213.1 dna_sm:scaffold scaffold:GRCm38:GL456213.1:1:39340:1 REF
+>GL456383.1 dna_sm:scaffold scaffold:GRCm38:GL456383.1:1:38659:1 REF
+>GL456385.1 dna_sm:scaffold scaffold:GRCm38:GL456385.1:1:35240:1 REF
+>GL456360.1 dna_sm:scaffold scaffold:GRCm38:GL456360.1:1:31704:1 REF
+>GL456378.1 dna_sm:scaffold scaffold:GRCm38:GL456378.1:1:31602:1 REF
+>GL456389.1 dna_sm:scaffold scaffold:GRCm38:GL456389.1:1:28772:1 REF
+>GL456372.1 dna_sm:scaffold scaffold:GRCm38:GL456372.1:1:28664:1 REF
+>GL456370.1 dna_sm:scaffold scaffold:GRCm38:GL456370.1:1:26764:1 REF
+>GL456381.1 dna_sm:scaffold scaffold:GRCm38:GL456381.1:1:25871:1 REF
+>GL456387.1 dna_sm:scaffold scaffold:GRCm38:GL456387.1:1:24685:1 REF
+>GL456390.1 dna_sm:scaffold scaffold:GRCm38:GL456390.1:1:24668:1 REF
+>GL456394.1 dna_sm:scaffold scaffold:GRCm38:GL456394.1:1:24323:1 REF
+>GL456392.1 dna_sm:scaffold scaffold:GRCm38:GL456392.1:1:23629:1 REF
+>GL456382.1 dna_sm:scaffold scaffold:GRCm38:GL456382.1:1:23158:1 REF
+>GL456359.1 dna_sm:scaffold scaffold:GRCm38:GL456359.1:1:22974:1 REF
+>GL456396.1 dna_sm:scaffold scaffold:GRCm38:GL456396.1:1:21240:1 REF
+>GL456368.1 dna_sm:scaffold scaffold:GRCm38:GL456368.1:1:20208:1 REF
+>JH584292.1 dna_sm:scaffold scaffold:GRCm38:JH584292.1:1:14945:1 REF
+>JH584295.1 dna_sm:scaffold scaffold:GRCm38:JH584295.1:1:1976:1 REF
+```
+
+</details>
+
+This is a lot of output! 
+The genome assembly includes the autossomal chromosomes (1-19), the sex chromosomes (X and Y) and also several scaffolds that have yet to be assembled into the main genome. 
+If we wanted to create a "decoy" for all these chromosomes, we could use some command line tricks using the `sed` program to perform text substitution for us: 
+
+```bash
+grep ">" references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa | sed 's/>//' | sed 's/ .*//'
+```
+
+<details><summary>Click to expand output</summary>
+
+```
+1
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+2
+3
+4
+5
+6
+7
+8
+9
+MT
+X
+Y
+JH584299.1
+GL456233.1
+JH584301.1
+GL456211.1
+GL456350.1
+JH584293.1
+GL456221.1
+JH584297.1
+JH584296.1
+GL456354.1
+JH584294.1
+JH584298.1
+JH584300.1
+GL456219.1
+GL456210.1
+JH584303.1
+JH584302.1
+GL456212.1
+JH584304.1
+GL456379.1
+GL456216.1
+GL456393.1
+GL456366.1
+GL456367.1
+GL456239.1
+GL456213.1
+GL456383.1
+GL456385.1
+GL456360.1
+GL456378.1
+GL456389.1
+GL456372.1
+GL456370.1
+GL456381.1
+GL456387.1
+GL456390.1
+GL456394.1
+GL456392.1
+GL456382.1
+GL456359.1
+GL456396.1
+GL456368.1
+JH584292.1
+JH584295.1
+```
+
+</details>
+
+- The first `sed` substitutes the ">" character by nothing. 
+- The second `sed` substitutes a space " " followed by any characters (that's what `.*` means - it's a regular expression) by nothing.
+
+We could then have redirected `>` the output of the command above to a `decoys.txt` file to use with Salmon. 
+
+**3.**
+
+The command used to index the transcriptome is:
+
+```bash
+salmon index \
+    -t references/gentrome.chr14.fa.gz \
+    -d references/decoys.txt \
+    -p 7 \
+    -i references/salmon_index_chr14
+```
+
+Note that the `\` is used to split the command across multiple lines. 
+Make sure that there is **no space** after the `\` symbol, otherwise it will break the code!
+
+</details>
+
+:::
+
+
+## Gene expression quantification
 
 Now that we have an index we can quickly get gene expression estimates directly
 from our raw fastq files.
@@ -135,31 +352,51 @@ with just 2 million reads - this way we can run Salmon in a reasonable time.
 The files we will use are called *SRR7657883.subset_2M....*.
 
 
-## Exercise 2 - Quantify with Salmon
+### Exercise 2 - Quantify with Salmon
 
-> 1. Make directory called `salmon_output`
-> 2. Use `salmon quant` to quantify the gene expression from the raw fastq.
-> To see all the options run `salmon quant --help-reads`. There are lot of 
-> possible parameters, we will need to provide the following:
->       * **salmon index** - *references/salmon_index*
->       * `-l A` - Salmon needs to use some information about the library 
->         preparation, we could explicitly give this, but it is easy enough
->         for Salmon to **A**utomatically infer this from the data.
->       * **File containing the #1 reads** - *fastq/SRR7657883.subset_2M.sra_1.fastq.gz*
->       * **File containing the #2 reads** - *fastq/SRR7657883.subset_2M.sra_2.fastq.gz*
->       * **Output quantification directory** - *salmon_output/SRR7657883*
->       * `--writeMappings=salmon_output/SRR7657883.salmon.sam` - Instructs 
->         Salmon to output the read alignments in SAM format to the file 
->         *salmon_output/SRR7657883.salmon.sam*.
->       * `--gcBias` - salmon can optionally correct for GC content bias, it is
->         recommended to always use this
->       * **The number of threads to use** - *7*
+:::exercise
+
+Use `salmon quant` to quantify the gene expression from the raw fastq.
+To see all the options run `salmon quant --help-reads`. 
+There are lot of possible parameters, we will need to provide the following:
+
+* **salmon index** - `references/salmon_index`
+* `-l A` - Salmon needs to use some information about the library preparation, we could explicitly give this, but it is easy enough for Salmon to **A**utomatically infer this from the data.
+* **File containing the #1 reads** - `fastq/SRR7657883.subset_2M.sra_1.fastq.gz`
+* **File containing the #2 reads** - `fastq/SRR7657883.subset_2M.sra_2.fastq.gz`
+* **Output quantification directory** - `salmon_output/SRR7657883`
+* `--writeMappings=salmon_output/SRR7657883.salmon.sam` - Instructs Salmon to output the read alignments in SAM format to the file `salmon_output/SRR7657883.salmon.sam`.
+* `--gcBias` - salmon can optionally correct for GC content bias, it is recommended to always use this
+* **The number of threads to use** - *7*
 
 Salmon creates a separate output directory for each sample analysed. This 
 directory contains a number of files; the file that contains the quantification
 data is called `quant.sf`.
 
-### 3.1 SAM to BAM with samtools
+<details><summary>Answer</summary>
+
+The full command to run _Salmon_ is:
+
+```bash
+salmon quant \
+    -i references/salmon_index \
+    -l A \
+    -1 fastq/SRR7657883.subset_2M.sra_1.fastq.gz \
+    -2 fastq/SRR7657883.subset_2M.sra_2.fastq.gz \
+    -o salmon_output/SRR7657883 \
+    --writeMappings salmon_output/SRR7657883/SRR7657883.salmon.sam \
+    --gcBias \
+    -p 7
+```
+
+Note that the `\` is used to split the command across multiple lines. 
+Make sure that there is **no space** after the `\` symbol, otherwise it will break the code!
+
+</details>
+:::
+
+
+## SAM to BAM conversion
 
 We can transform from SAM to BAM using `samtools`. `samtools` is a toolkit that
 provides a number of useful tools for working with SAM/BAM files. The BAM file
@@ -171,7 +408,9 @@ further improves the compression of the SAM to BAM. We will use the
 
 The general command is:
 
-`samtools sort -O BAM -o my_sample.sorted.bam my_sample.sam`
+```bash
+samtools sort -O BAM -o my_sample.sorted.bam my_sample.sam
+```
 
 Where the `-o` option is used to provide the output file name. There are many
 other options, e.g. reads can be sorted by the read name instead of the position
@@ -180,12 +419,36 @@ use `samtools sort --help`.
 
 ### Exercise 3
 
-> 1. Sort and transform your aligned SAM file into a BAM file called
-> `SRR7657883.salmon.sorted.bam`. Use the option `-@ 7` to use 7 cores, this
-> vastly speeds up the compression.
+:::exercise
 
-> 2. Use, for example, `samtools view my_sample.sorted.bam` to check your BAM file
+1. Sort and transform your aligned SAM file into a BAM file called
+`SRR7657883.salmon.sorted.bam`. Use the option `-@ 7` to use 7 cores, this
+vastly speeds up the compression.
+
+2. Use, for example, `samtools view my_sample.sorted.bam` to check your BAM file.
+
+<details><summary>Answer</summary>
+
+**1.**
+
+```bash
+samtools sort \
+  -@ 7 \
+  -O BAM \
+  -o salmon_output/SRR7657883/SRR7657883.salmon.sorted.bam \
+   salmon_output/SRR7657883/SRR7657883.salmon.sam
+```
+
+**2.**
+
+```bash
+samtools view salmon_output/SRR7657883/SRR7657883.salmon.sorted.bam | less -S
+```
+
+</details>
+
+:::
 
 ----------------------------------------------------------
 
-# References
+## References

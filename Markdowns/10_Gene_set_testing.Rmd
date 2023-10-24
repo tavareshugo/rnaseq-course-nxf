@@ -1,19 +1,20 @@
 ---
 title: "Introduction to Bulk RNAseq data analysis"
-subtitle: "Gene Set Testing for RNA-seq"
 date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
 output:
   html_document:
     toc: yes
     toc_float: true
+    css: ../css/boxes.css
   pdf_document:
     toc: yes
 bibliography: ref.bib
 always_allow_html: true
 ---
 
+# Gene Set Testing
+
 ```{r setup, echo=FALSE, cache=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.width = 4, fig.height = 3)
 knitr::opts_knit$set(root.dir = here::here("Course_Materials"))
 ```
 
@@ -38,9 +39,7 @@ for testing from various sources.
 Today we will use 
 [`clusterProfiler`](https://yulab-smu.github.io/clusterProfiler-book/index.html).
 
-# Over-representation
-
-## Method
+## Over-representation
 
 This method tests whether genes in a pathway are present in a subset of our data
 in a higher number than expected by chance (explanations derived from the 
@@ -58,7 +57,7 @@ We can then create a contingency table with:
 
 And test for independence of the two variables with the Fisher exact test.
 
-## `clusterProfiler`
+### `clusterProfiler`
 
 `clusterprofiler` [@Yu2012] supports direct online access of the current KEGG
 database (KEGG: Kyoto Encyclopedia of Genes and Genomes), rather than relying on
@@ -76,7 +75,7 @@ search_kegg_organism('mouse', by='common_name')
 
 We will use the 'mmu' 'kegg_code'.
 
-## KEGG enrichment analysis
+### KEGG enrichment analysis
 
 The input for the KEGG enrichment analysis is the list of gene IDs of significant genes. 
 
@@ -108,7 +107,7 @@ keggRes <- enrichKEGG(gene = sigGenes, organism = 'mmu')
 as_tibble(keggRes)
 ```
 
-### Visualise a pathway in a browser
+#### Visualise a pathway in a browser
 
 `clusterProfiler` has a function `browseKegg` to view the KEGG pathway in a browser,
 highlighting the genes we selected as differentially expressed.
@@ -119,7 +118,7 @@ We will show one of the top hits: pathway 'mmu04612' for 'Antigen processing and
 browseKEGG(keggRes, 'mmu04612')
 ```
 
-### Visualise a pathway as a file
+#### Visualise a pathway as a file
 
 The package `pathview` [@Luo2013] can be used to generate figures of KEGG 
 pathways. 
@@ -145,13 +144,32 @@ pathview(gene.data = logFC,
 
 ![mmu04612 - Antigen processing and presentation](images/mmu04612_pathview.png)
 
-> ### Exercise 1 {.challenge}
->
-> 1. Use `pathview` to export a figure for "mmu04659" or "mmu04658", but this 
-> time only use genes that are statistically significant at padj < 0.01
->
+### Exercise 1 {.challenge}
 
-# GO term enrichment analysis
+:::exercise
+1. Use `pathview` to export a figure for "mmu04659" or "mmu04658", but this 
+time only use genes that are statistically significant at padj < 0.01
+
+<details><summary>Answer</summary>
+
+```{r solution1}
+logFC <- shrink.d11 %>% 
+  drop_na(padj, Entrez) %>% 
+  filter(padj < 0.01) %>% 
+  pull(log2FoldChange, Entrez) 
+
+pathview(gene.data = logFC, 
+         pathway.id = "mmu04659", 
+         species = "mmu", 
+         limit = list(gene=5, cpd=1))
+```
+
+![mmu04659 - Th17 cell differentiation](images/mmu04659_pathview.png)
+
+</details>
+:::
+
+## GO term enrichment analysis
 
 `clusterProfiler` can also perform over-representation analysis on GO terms 
 using the command `enrichGO`. For this analysis we will use Ensembl gene IDs 
@@ -214,7 +232,7 @@ emapplot(ego_pt, cex_label_category = 0.25)
 ```
 
 
-# GSEA analysis
+## GSEA analysis
 
 Gene Set Enrichment Analysis (GSEA) identifies gene sets that are enriched in the dataset between samples [@Subramanian15545].
 
@@ -236,8 +254,6 @@ Let's load `msigdbr` now.
 library(msigdbr)
 ```
 
-## Method
-
 The analysis is performed by:
 
 1. ranking all genes in the data set  
@@ -258,7 +274,7 @@ provides a shorter description.
 We will use `clusterProfiler`'s [`GSEA`](http://yulab-smu.top/clusterProfiler-book/chapter2.html#gene-set-enrichment-analysis) 
 package [@Yu2012] that implements the same algorithm in R. 
 
-## Rank genes
+### Rank genes
 
 We need to provide `GSEA` with a vector containing values for a given gene
 mtric, e.g. log(fold change), sorted in decreasing order.
@@ -277,7 +293,7 @@ rankedGenes <- shrink.d11 %>%
   pull(rank, GeneID)
 ```
 
-## Load pathways
+### Load pathways
 
 We will load the MSigDB Hallmark gene set with `msigdbr`, setting the `category`
 parameter to 'H' for **H**allmark gene set. The object created is a `tibble`
@@ -292,7 +308,7 @@ term2name <- msigdbr(species = "Mus musculus", category = "H") %>%
   distinct()
 ```
 
-## Conduct analysis
+### Conduct analysis
 
 Arguments passed to `GSEA` include:
 
@@ -331,7 +347,7 @@ as_tibble(gseaRes) %>%
   DT::datatable(option=list(dom='t'))
 ```
 
-## Enrichment score plot
+### Enrichment score plot
 
 The enrichment score plot displays along the x-axis that represents the decreasing gene rank:
 
@@ -350,17 +366,122 @@ Remember to check the [GSEA
 article](http://www.pnas.org/content/102/43/15545.full) for the complete 
 explanation.
 
-> ## Exercise 2 {.exercise}
->
-> Another common way to rank the genes is to order by pvalue while sorting
-> so that upregulated genes are at the start and downregulated at the end.
-> You can do this combining the sign of the fold change and the pvalue. 
-> 
-> 1. Rank the genes by statistical significance - you will need to create
-> a new ranking value using `-log10(pvalue) * sign(log2FoldChange)`.
-> 2. Run GSEA using the new ranked genes and the H pathways.
-> 3. Conduct the same analysis for the day 33 Infected vs Uninfected contrast.
+### Exercise 2 {.exercise}
 
+:::exercise
+Another common way to rank the genes is to order by pvalue while sorting
+so that upregulated genes are at the start and downregulated at the end.
+You can do this combining the sign of the fold change and the pvalue. 
+
+1. Rank the genes by statistical significance - you will need to create
+a new ranking value using `-log10(pvalue) * sign(log2FoldChange)`.
+2. Run GSEA using the new ranked genes and the H pathways.
+3. Conduct the same analysis for the day 33 Infected vs Uninfected contrast.
+
+<details><summary>Answer</summary>
+
+First load the pathway details if you have not already done so.
+
+```{r solution3_GSEA_a}
+library(msigdbr)
+term2gene <- msigdbr(species = "Mus musculus", category = "H") %>% 
+  dplyr::select(gs_name, ensembl_gene)
+term2name <- msigdbr(species = "Mus musculus", category = "H") %>% 
+  dplyr::select(gs_name, gs_description) %>% 
+  distinct()
+```
+
+**1.**
+
+```{r solution3_GSEA_1}
+# rank genes
+rankedGenes.e11 <- shrink.d11 %>%
+  drop_na(GeneID, pvalue, log2FoldChange) %>%
+  mutate(rank = -log10(pvalue) * sign(log2FoldChange)) %>%
+  arrange(desc(rank)) %>%
+  pull(rank, GeneID)
+```
+
+**2.**
+
+```{r solution3_GSEA_2}
+# conduct analysis:
+gseaRes.e11 <- GSEA(rankedGenes.e11,
+                TERM2GENE = term2gene,
+                TERM2NAME = term2name,
+                pvalueCutoff = 1.00, 
+                minGSSize = 15,
+                maxGSSize = 500)
+```
+
+View the results:
+
+```{r top10GseaPrint11, eval=FALSE}
+as_tibble(gseaRes.e11) %>% 
+  arrange(desc(abs(NES))) %>% 
+  top_n(10, wt=-p.adjust) %>% 
+  dplyr::select(-core_enrichment) %>%
+  mutate(across(c("enrichmentScore", "NES"), round, digits=3)) %>% 
+  mutate(across(c("pvalue", "p.adjust", "qvalue"), scales::scientific)) 
+```
+
+```{r top10GseaPrintactual11, echo=FALSE}
+as_tibble(gseaRes.e11) %>% 
+  arrange(desc(abs(NES))) %>% 
+  top_n(10, wt=-p.adjust) %>% 
+  dplyr::select(-core_enrichment) %>%
+  mutate(across(c("enrichmentScore", "NES"), round, digits=3)) %>% 
+  mutate(across(c("pvalue", "p.adjust", "qvalue"), scales::scientific)) %>% 
+  DT::datatable(option=list(dom='t'))
+```
+
+**3.**
+
+```{r solution3_GSEA_3}
+
+# read d33 data in:
+shrink.d33 <- readRDS("RObjects/Shrunk_Results.d33.rds")
+
+# rank genes
+rankedGenes.e33 <- shrink.d33 %>%
+  drop_na(GeneID, pvalue, log2FoldChange) %>%
+  mutate(rank = -log10(pvalue) * sign(log2FoldChange)) %>%
+  arrange(desc(rank)) %>%
+  pull(rank,GeneID)
+
+# perform analysis
+gseaRes.e33 <- GSEA(rankedGenes.e33,
+                TERM2GENE = term2gene,
+                TERM2NAME = term2name,
+                pvalueCutoff = 1.00, 
+                minGSSize = 15,
+                maxGSSize = 500)
+```
+
+View the results:
+
+```{r top10GseaPrint33, eval=FALSE}
+as_tibble(gseaRes.e33) %>% 
+  arrange(desc(abs(NES))) %>% 
+  top_n(10, wt=-p.adjust) %>% 
+  dplyr::select(-core_enrichment) %>%
+  mutate(across(c("enrichmentScore", "NES"), round, digits=3)) %>% 
+  mutate(across(c("pvalue", "p.adjust", "qvalue"), scales::scientific))
+```
+
+```{r top10GseaPrintactual33, echo=FALSE}
+as_tibble(gseaRes.e33) %>% 
+  arrange(desc(abs(NES))) %>% 
+  top_n(10, wt=-p.adjust) %>% 
+  dplyr::select(-core_enrichment) %>%
+  mutate(across(c("enrichmentScore", "NES"), round, digits=3)) %>% 
+  mutate(across(c("pvalue", "p.adjust", "qvalue"), scales::scientific)) %>% 
+  DT::datatable(option=list(dom='t'))
+```
+
+
+</details>
+:::
 
 ---------------------------------------------------------------
 

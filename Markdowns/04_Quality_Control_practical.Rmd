@@ -1,12 +1,15 @@
 ---
 title: "Introduction to Bulk RNAseq data analysis"
-subtitle: Quality Control
 output:
-  html_document: default
-  pdf_document: default
+  html_document:
+    toc: yes
+    toc_float: true
+    css: ../css/boxes.css
+  pdf_document:
+    toc: yes
 ---
 
-# Checking the quality of the data
+# Quality Control
 
 Once we have aligned our reads and quantified gene expression with Salmon, it is
 then possible to run some additional quality checks on our data. We will use a 
@@ -44,7 +47,7 @@ command:
 java -jar picard/picard.jar PicardToolName --help
 ```
 
-### Duplication metrics
+## Duplication metrics
 
 The first tool we are going to use is `MarkDuplicates`. This tool
 actually performs two tasks. 
@@ -63,37 +66,59 @@ information about the duplication rate.
 
 ### Exercise 1
 
+:::exercise
+
 For the purposes of this exercise we will work with a bam file that only
 contains 2 million reads. Running Picard on the full bam file would take too
-long for the practical. You should find a file called
-`SRR7657883.salmon.sorted.bam` under the directory `salmon_qc_demo/SRR7657883`,
-please use this file rather than the bam file you created in the previous
-session.
+long for the practical. 
+You should find a file called `SRR7657883.salmon.sorted.bam` under the directory `salmon_qc_demo/SRR7657883`,
+please use this file rather than the bam file you created in the previous session.
 
-> 1. Run Picard's MarkDuplicates tool on the sorted bam file using the
->    following command:  
-> ```{bash eval=FALSE}
-> java -jar picard/picard.jar MarkDuplicates \
->          INPUT= salmon_qc_demo/SRR7657883/SRR7657883.salmon.sorted.bam \
->          OUTPUT=salmon_qc_demo/SRR7657883/SRR7657883.salmon.mkdup.bam \
->          METRICS_FILE=salmon_qc_demo/SRR7657883/SRR7657883.mkdup_metrics.txt \
->          CREATE_INDEX=true \
->          VALIDATION_STRINGENCY=SILENT
+Run Picard's MarkDuplicates tool on the sorted bam file using the following command:
+   
+```bash
+java -jar picard/picard.jar MarkDuplicates \
+  INPUT= salmon_qc_demo/SRR7657883/SRR7657883.salmon.sorted.bam \
+  OUTPUT=salmon_qc_demo/SRR7657883/SRR7657883.salmon.mkdup.bam \
+  METRICS_FILE=salmon_qc_demo/SRR7657883/SRR7657883.mkdup_metrics.txt \
+  CREATE_INDEX=true \
+  VALIDATION_STRINGENCY=SILENT 
+```
+    
+**Note**: The `\` at the end of each line tells the terminal that when you 
+press `Enter`, you have not yet finished typing the command. You can if you
+wish, type the whole command on a single line, omitting the `\`. The command
+is written across > multiple lines here just to make it easier to read.
 
-> ```
-> **Note**: The `\` at the end of each line tells the terminal that when you 
-> press `Enter`, you have not yet finished typing the command. You can if you
-> wish, type the whole command on a single line, omitting the `\`. The command
-> is written across > multiple lines here just to make it easier to read.
->
-> Q. What is the duplication rate for this bam file? You'll need to look at the
-> metrics file. The easiest way is to open in a spreadsheet. On the course 
-> machines we have LibreOffice Calc. You can find this in the launcher bar at 
-> the bottom or side of the desktop, e.g.:
+What is the duplication rate for this bam file? You'll need to look at the
+metrics file. The easiest way is to open in a spreadsheet. On the course 
+machines we have LibreOffice Calc. You can find this in the launcher bar:
+
 ![](images/Launcher_bar_cacl.png)
 
+<details><summary>Answer</summary>
 
-### RNA alignment metrics
+We ran the command shown, which includes: 
+
+- `salmon_qc_demo/SRR7657883/SRR7657883.salmon.mkdup.bam` - the BAM file with marked duplicates.
+- `salmon_qc_demo/SRR7657883/SRR7657883.salmon.mkdup.bai` - the index for the BAM file.
+- `salmon_qc_demo/SRR7657883/SRR7657883.salmon.mkdup_metrics.txt` - the duplication metrics will be writen to this file.
+
+Opening that last file in LibreOffice shows the following:
+
+![](images/MarkDuplicates_results.png)
+
+The duplication rate reported is ~5%. 
+
+Note that although the column headers for Picard say "PERCENT" or "PCT" the
+number is in fact the decimal fraction and needs to be multiplied by 100 for
+percent. Just an odd quirk of Picard.
+
+</details>
+
+:::
+
+## RNA alignment metrics
 
 The `CollectRnaSeqMetrics` tool produces metrics describing the distribution of
 the reads across different genomic locations - intronic, exonic, intergenic,
@@ -110,18 +135,19 @@ The `CollectRnaSeqMetrics` requires four pieces of information to run:
    defined
    [here](http://genome.ucsc.edu/goldenPath/gbdDescriptionsOld.html#RefFlat).
 4. A parameter for strand specificity. Strand specificity is factor of the
-   library prep chemistry. There are three possible options:  
+   library prep chemistry. There are three possible options:
         a) Forward stranded library prep, i.e. the reads are on the
            transcription strand - FIRST_READ_TRANSCRIPTION_STRAND   
         b) Reverse stranded library prep, i.e. the reads are on the reverse
            strand - SECOND_READ_TRANSCRIPTION_STRAND  
         c) Unstranded library prep, i.e. the reads may be on either strand -
            NONE  
-    With your own data you would need to find this information out from whoever
-    has prepared the library. In this case our library prep is unstranded, so we
-    will use `NONE`.
+    
+With your own data you would need to find this information out from whoever
+has prepared the library. In this case our library prep is unstranded, so we
+will use `NONE`.
 
-#### Generate the refFlat file
+### Generate the refFlat file
   
 The first thing we will need to do is construct the refFlat file. 
 If we had aligned our reads to the genome, we would then need gene annotations
@@ -170,16 +196,18 @@ transcriptome reference.
 
 ### Exercise 2
 
-> 1. Run Picard's `CollectRnaSeqMetrics` tool on the sorted bam file using the
->    following command:  
->       * INPUT - The bam file
->       * OUTPUT - `salmon_qc_demo/SRR7657883/SRR7657883.salmon.RNA_metrics.txt`
->       * REF_FLAT - the refFlat reference file
->       * STRAND - `NONE`
->       * VALIDATION_STRINGENCY - SILENT
+:::exercise
+
+1. Run Picard's `CollectRnaSeqMetrics` tool on the sorted bam file using the following options:
+   * `INPUT` - The bam file
+   * `OUTPUT` - `salmon_qc_demo/SRR7657883/SRR7657883.salmon.RNA_metrics.txt`
+   * `REF_FLAT` - the refFlat reference file
+   * `STRAND` - `NONE`
+   * `VALIDATION_STRINGENCY` - SILENT
 
 <details><summary>Answer</summary>
-```{bash eval=FALSE}
+
+```bash
 java -jar picard/picard.jar CollectRnaSeqMetrics \
           INPUT=salmon_qc_demo/SRR7657883/SRR7657883.salmon.sorted.bam \
           OUTPUT=salmon_qc_demo/SRR7657883/SRR7657883.salmon.RNA_metrics.txt \
@@ -187,16 +215,17 @@ java -jar picard/picard.jar CollectRnaSeqMetrics \
           STRAND=NONE \
           VALIDATION_STRINGENCY=SILENT
 ```
-> **Note**: The `\` at the end of each line tells the terminal that when you press 
-> `Enter`, you have not yet finished typing the command. You can if you wish, type
-> the whole command on a single line, omitting the `\`. The command is written across
-> multiple lines here just to make it easier to read.
->
+
+**Note**: The `\` at the end of each line tells the terminal that when you press 
+`Enter`, you have not yet finished typing the command. You can if you wish, type
+the whole command on a single line, omitting the `\`. The command is written across
+multiple lines here just to make it easier to read.
+
+The results of this analysis are best viewed graphically, we will do this in
+the next exercise.
 
 </details>
-
-> The results of this analysis are best viewed graphically, we will do this in
-> the next exercise.
+:::
 
 ## Visualising QC results with MultiQC
 
@@ -213,30 +242,58 @@ of the report.
 
 ### Exercise 3
 
-> 1. Run multiqc on the salmon directory: 
-> ```{bash eval=FALSE}
-> multiqc \
->     -n Salmon_QC_Report.html \
->     -o salmon_qc_demo \
->     salmon_qc_demo
-> ```   
->
-> * `-n` - a name for the report
-> * `-o` - the directory in which to place the report
->
-> 2. Open the html report that was generated by multiqc and inspect the QC plots
->    The easiest way to do this is type 
->    `xdg-open salmon_qc_demo/Salmon_QC_Report.html`, which will open the report
->    in a web browser.
+:::exercise
+
+1. Run multiqc on the salmon directory: 
+
+    ```{bash eval=FALSE}
+    multiqc \
+        -n Salmon_QC_Report.html \
+        -o salmon_qc_demo \
+        salmon_qc_demo
+    ```   
+      * `-n` - a name for the report
+      * `-o` - the directory in which to place the report
+2. Open the html report that was generated by multiqc and inspect the QC plots
+   One way to do this from the command line is to type 
+   `xdg-open salmon_qc_demo/Salmon_QC_Report.html`, which will open the report
+   in a web browser.
+
+<details><summary>Answer</summary>
+
+TODO
+
+</details>
+:::
 
 ### Exercise 4
 
-> In the `salmon` directory you should find Salmon outputs, duplication metrics
-> and RNAseq metrics for all of the samples from the study.  
->
-> 1. Run multiqc on the contents of the metrics directory.   
-> 2. Open the html report that was generated by multiqc and inspect the QC plots 
->
-> Q. Are there any samples that look problematic?
+:::exercise
+In the `salmon` directory you should find Salmon outputs, duplication metrics
+and RNAseq metrics for all of the samples from the study.  
+
+1. Run multiqc on the contents of the metrics directory.   
+2. Open the html report that was generated by multiqc and inspect the QC plots.
+   Are there any samples that look problematic?
+
+<details><summary>Answer</summary>
+
+**1.**
+
+```bash
+multiqc -z -n Salmon_QC_Report.html -o salmon salmon
+```
+
+**2.**
+
+SRR7657893 has low alignment rate, an insert size profile that is skewed to 
+left with a median at ~180 bp and a transcript coverage profile that shows
+a strong 3' bias. This suggests that the RNA in the this sample has been 
+degraded.
+NOTE: This sample is not real - we have mocked up the metrics files for the 
+purpose of illustrating a poor quality data set. 
+
+</details>
+:::
 
 ---------------------------------------------------------------------

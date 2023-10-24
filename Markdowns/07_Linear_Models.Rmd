@@ -1,21 +1,19 @@
 ---
 title: "Introduction to Bulk RNAseq data analysis"
-subtitle: "Linear Models in R and DESeq2"
 date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
 output:
-  pdf_document:
-    toc: yes
   html_document:
     toc: yes
     toc_float: true
     css: ../css/boxes.css
+  pdf_document:
+    toc: yes
 bibliography: ref.bib
-editor_options: 
-  chunk_output_type: console
 ---
 
+# Linear Models in R and DESeq2
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.width = 4, fig.height = 3)
 knitr::opts_knit$set(root.dir = here::here("Course_Materials"))
 ```
 
@@ -46,7 +44,6 @@ example_interaction <- tibble(treatment = rep(c("A", "B"), each = 10),
   mutate(y = rnorm(n(), mean = as.numeric(factor(treatment)) + as.numeric(factor(genotype))/2 + as.numeric(genotype == "MUT" & treatment == "B"), 
                    sd = 0.1))
 ```
-
 
 ## Summary
 

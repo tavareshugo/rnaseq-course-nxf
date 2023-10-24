@@ -1,17 +1,19 @@
 ---
 title: "Introduction to Bulk RNAseq data analysis"
-subtitle: Annotation and Visualisation of Differential Expression Results
 date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
 output:
   html_document:
     toc: yes
+    toc_float: true
+    css: ../css/boxes.css
   pdf_document:
     toc: yes
 bibliography: ref.bib
 ---
 
+# Annotation and Visualisation of Differential Expression Results
+
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.width = 4, fig.height = 3)
 knitr::opts_knit$set(root.dir = here::here("Course_Materials"))
 ```
 
@@ -32,12 +34,7 @@ results.interaction.11 <- readRDS("RObjects/DESeqResults.interaction_d11.rds")
 results.interaction.33 <- readRDS("RObjects/DESeqResults.interaction_d33.rds")
 ```
 
-# Overview
-
-- Getting annotation
-- Visualizing DE results
-
-# Adding annotation to the DESeq2 results
+## Adding annotation to the DESeq2 results
 
 We have a list of significantly deferentially expressed genes, but the only
 annotation we can see is the Ensembl Gene ID, which is not very informative. 
@@ -89,7 +86,6 @@ ah[1]
 
 # Download the database we want to use
 MouseEnsDb <- query(ah, c("EnsDb", "Mus musculus", "102"))[[1]]
-
 ```
 
 This database contains the entire gene annotation from Ensembl release 102 for
@@ -164,8 +160,8 @@ Ensembl and Entrez databases don't match on a 1:1 level although they have
 started taking steps towards consolidating
 [in recent years](https://m.ensembl.org/info/genome/genebuild/mane.html).
 
-## One we prepared earlier and one-to-many relationships
 
+## One we prepared earlier and one-to-many relationships
 
 To ensure everyone is working with same annotation, we have created an annotation table.
 
@@ -201,9 +197,9 @@ Finally we can output the annotation DE results using `write_tsv`.
 write_tsv(annot.interaction.11, "results/Interaction.11_Results_Annotated.txt")
 ```
 
-# Visualisation
+## Visualisation
 
-## P-value histogram
+### P-value histogram
 
 A quick and easy "sanity check" for our DE results is to generate a p-value 
 histogram. What we should see is a high bar at `0 - 0.05` and then a roughly
@@ -215,7 +211,7 @@ post](http://varianceexplained.org/statistics/interpreting-pvalue-histogram/).
 hist(annot.interaction.11$pvalue)
 ```
 
-## Shrinking the log2FoldChange
+### Shrinking the log2FoldChange
 
 `DESeq2` provides a function called `lfcShrink` that shrinks log-Fold Change 
 (LFC) estimates towards zero using and empirical Bayes procedure. The reason for
@@ -235,7 +231,7 @@ shrinkTab.11 <- as.data.frame(ddsShrink.11) %>%
     left_join(ensemblAnnot, "GeneID")
 ```
 
-## MA plots
+### MA plots
 
 MA plots are a common way to visualize the results of a differential analysis.
 We met them briefly towards the end of [the DESeq2
@@ -255,12 +251,13 @@ functions aren't easy to customise, make changes to the way it looks or add
 things such as gene labels. For this we would recommend using the ggplot
 package.
 
-## Volcano Plots
+### Volcano Plots
 
 Another common visualisation is the 
 [*volcano plot*](https://en.wikipedia.org/wiki/Volcano_plot_(statistics)) which
 displays a measure of significance on the y-axis and fold-change on the x-axis.
 We will use ggplot to create this.
+
 
 ### A Brief Introduction to `ggplot2`
 
@@ -301,13 +298,16 @@ ggplot(shrinkTab.11, aes(x = log2FoldChange, y = -log10(pvalue))) +
          title = "Infected vs Uninfected (day 11)")
 ```
 
-## Exercise 1 - Volcano plot for 33 days
 
-> We just made the volcano plot for the 11 days contrast, you will make the one
-> for the 33 days contrast.
+### Exercise 1 - Volcano plot for 33 days
 
-> If you haven't already make sure you load in our data and annotation. You can
-> copy and paste the code below.
+:::exercise
+
+We just made the volcano plot for the 11 days contrast, you will make the one
+for the 33 days contrast.
+
+If you haven't already make sure you load in our data and annotation. You can
+copy and paste the code below.
 
 ```{r eval=FALSE}
 # First load data and annotations
@@ -315,8 +315,8 @@ results.interaction.33 <- readRDS("RObjects/DESeqResults.interaction_d33.rds")
 ensemblAnnot <- readRDS("RObjects/Ensembl_annotations.rds")
 ```
 
-> (a)
-> Shrink the results for the 33 days contrast.
+(a)
+Shrink the results for the 33 days contrast.
 
 ```{r, echo=FALSE}
 #Shrink our values
@@ -329,9 +329,9 @@ shrinkTab.33 <- as.data.frame(ddsShrink.33) %>%
     left_join(ensemblAnnot, "GeneID")
 ```
 
-> (b) 
-> Create a plot with points coloured by padj < 0.05 similar to how we did in 
-> the first volcano plot
+(b) 
+Create a plot with points coloured by padj < 0.05 similar to how we did in 
+the first volcano plot
 
 ```{r echo=FALSE, eval=FALSE}
 ggplot(shrinkTab.33, aes(x = log2FoldChange, y = -log10(pvalue))) + 
@@ -340,18 +340,22 @@ ggplot(shrinkTab.33, aes(x = log2FoldChange, y = -log10(pvalue))) +
          title = "Infected vs Uninfected (day 33)")
 ```
 
-> (c)
-> Compare these two volcano plots, what differences can you see between the two contrasts?
+(c)
+Compare these two volcano plots, what differences can you see between the two contrasts?
+
+:::
 
 
-## Exercise 2 - MA plot for day 33 with ggplot2
+### Exercise 2 - MA plot for day 33 with ggplot2
 
-> For this exercise create an MA plot for day 33 like the ones we plotted with 
-> `plotMA` from **DESeq2** but this time using ggplot2. 
->
-> The x-axis should be the log2 of the mean gene expression across all 
-> samples, and the y-axis should be the log2 of the fold change between Infected
-> and Uninfected.
+:::exercise
+Create an MA plot for day 33 like the ones we plotted with `plotMA` from **DESeq2** but this time using ggplot2. 
+
+The x-axis should be the log2 of the mean gene expression across all 
+samples, and the y-axis should be the log2 of the fold change between Infected
+and Uninfected.
+:::
+
 
 ## Strip Charts for gene expression
 
@@ -361,8 +365,7 @@ the genes of interest. We can quickly look at grouped expression by using
 `plotCounts` function of `DESeq2` to  retrieve the normalised expression values 
 from the `ddsObj` object and then plotting with  `ggplot2`.
 
-We are going investigate the Il10ra gene:
-
+We are going investigate the _Il10ra_ gene:
 
 ```{r plotGeneCounts}
 geneID <- filter(shrinkTab.11, Symbol=="Il10ra") %>% pull(GeneID)
@@ -378,10 +381,13 @@ plotCounts(ddsObj.interaction,
       labs(title = "Normalised counts - Interleukin 10 receptor, alpha")
 ```
 
-## Exercise 3
+### Exercise 3
 
-> For this exercise create another strip chart for the gene Jchain.
+:::exercise
 
+Create another strip chart for the gene Jchain.
+
+:::
 
 ## Venn Diagram
 
@@ -536,14 +542,12 @@ Heatmap(z.mat, name = "z-score",
 ```{r saveEnvironment, eval=FALSE}
 saveRDS(annot.interaction.11, file="results/Annotated_Results.d11.rds")
 saveRDS(shrinkTab.11, file="results/Shrunk_Results.d11.rds")
-saveRDS(annot.interaction.33, file="results/Annotated_Results.d33.rds")
 saveRDS(shrinkTab.33, file="results/Shrunk_Results.d33.rds")
 ```
 
-```{r saveObjects, eval=TRUE, echo=FALSE}
-# pre-processed course files
+```{r saveObjects, eval=FALSE, echo=FALSE}
+# for reference in case trainers change materials - make sure to re-export the objects
 saveRDS(annot.interaction.11, file="RObjects/Annotated_Results.d11.rds")
 saveRDS(shrinkTab.11, file="RObjects/Shrunk_Results.d11.rds")
-# saveRDS(annot.interaction.33, file="RObjects/Annotated_Results.d33.rds")
 saveRDS(shrinkTab.33, file="RObjects/Shrunk_Results.d33.rds")
 ```

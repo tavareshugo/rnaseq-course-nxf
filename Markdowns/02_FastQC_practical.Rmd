@@ -2,8 +2,12 @@
 title: "Introduction to Bulk RNAseq data analysis"
 subtitle: QC of raw reads with FastQC
 output:
-  html_document: default
-  pdf_document: default
+  html_document:
+    toc: yes
+    toc_float: true
+    css: ../css/boxes.css
+  pdf_document:
+    toc: yes
 ---
 
 In our intial QC of the raw fastq file we will be interested in gathering
@@ -16,6 +20,8 @@ quality control tool for high throughput sequence data that is maintained
 by the Babraham Institute. It is free to download and use. It runs a number
 QC analyses on sequencing data (in various formats, not just fastq) and 
 summarises the results in a easy to read report.
+
+## Running FastQC
 
 The basic command to run FastQC is simply `fastqc`. 
 
@@ -42,7 +48,7 @@ report is written to the same directory as the fastqc file, however, if you
 would like to gather the QC in a different directory, you can specify this
 using the `-o` flag followed by the name of the directory, e.g:
 
-```
+```bash
 fastqc -o QC fastq/my_fastq_file.fastq.gz
 ```
 
@@ -54,39 +60,103 @@ Note that the output directory must already exist, FastQC will not create it.
 
 ### Exercise
 
-> 1. 
->       a) Check the location of the current directory using the command `pwd`  
->       b) If the current directory is not
->       `Course_Materials`, then navigate to the
->       **Course_Materials** directory using the `cd` (**c**hange
->       **d**irectory) command:  
->```{bash eval=FALSE}
-> cd ~/Course_Materials
->```
->
-> 2.   
->       a) Use `ls` to list the contents of the directory. There should be directory
->    called **fastq**    
->       b) Use `ls` to list the contents of the **fastq** directory:  
->```{bash eval=FALSE}
-> ls fastq
->```
->
-> You should see two fastq files called *SRR7657883.sra_1.fastq.gz* and
-> *SRR7657883.sra_1.fastq.gz*. These are the files for read 1 and read 2
-> of one of the samples we will be working with (you can ignore the other fastq
-> files for now).
->
->
-> 3. Run fastqc on one of the fastq files:  
->```{bash eval=FALSE}
-> fastqc fastq/SRR7657883.sra_1.fastq.gz  
->```
-> This will write the QC report to the *fastq* directory.
->
-> 4. Open the html report in a browser and see if you can answer these questions:  
->           A) What is the read length?  
->           B) Does the quality score vary through the read length?  
->           C) How is the data's quality?  
+:::exercise
 
--------------------------------------------------------------------
+**1.** 
+
+* Check the location of your current directory using the command `pwd`.
+* If your current directory is not `Course_Materials`, then navigate to the **Course_Materials** directory using the `cd` (**c**hange **d**irectory) command: `cd ~/Course_Materials`
+
+**2.** 
+
+- Use `ls` to list the contents of the directory. There should be directory called **fastq**. 
+- Use `ls` again to list the contents of the **fastq** directory: `ls fastq`
+- You should see two fastq files called *SRR7657883.sra_1.fastq.gz* and *SRR7657883.sra_1.fastq.gz*. These are the files for read 1 and read 2 of one of the samples we will be working with (you can ignore the other fastq files for now).
+
+**3.** 
+
+- Create a directory to output the FASTQC results: `mkdir results/fastqc`
+- Run `fastqc` on both fastq files: 
+    ```bash
+    fastqc -t 8 -o results/fastqc/ fastq/*
+    ```
+
+**4.** 
+
+Open the html report for either of the files (your choice) in a browser and see if you can answer these questions:
+
+1. What is the read length?
+2. Does the quality score vary through the read length?
+3. How is the data's quality?
+
+<details><summary>Answer</summary>
+
+**1.**
+
+In our case, running `pwd` gave: 
+
+```
+/home/ubuntu
+```
+
+This suggests we are in our home directory (our username was "ubuntu"). 
+So, we need to navigate to our "Course_Materials" directory with: 
+
+```bash
+cd ~/Course_Materials
+```
+
+**2.**
+
+Once we're in that directory, we ran `ls`, which showed: 
+
+```
+AnnotationHubCache  bam   fastq    picard      salmon          small_bams
+RObjects            data  metrics  references  salmon_outputs  stats
+```
+
+These directories contain several files we will use throghout the course. 
+We can the see "fastq" directory mentioned, and we can list its contents: 
+
+```bash
+ls fastq
+```
+
+```
+SRR7657883.sra_1.fastq.gz
+SRR7657883.sra_2.fastq.gz
+```
+
+These are the two FASTQ files (compressed with the gzip program, thus the `.gz` extension at the end).
+
+**3.**
+
+Running the FASTQC command given, we obtain information about the analysis progress printed on the terminal: 
+
+```
+TODO
+```
+
+Once the analysis completes, we can see the files generated in the output folder: 
+
+```bash
+ls results/fastqc
+```
+
+```
+TODO
+```
+
+**4.**
+
+We can open one of the HTML reports on our browser and answer the questions: 
+
+1. What is the read length?
+   * 150 bp 
+2. Does the quality score vary through the read length?
+   * Yes, the first few bases and the last few bases are typically of lower quality. This is particularly apparent if we look at the QC report for read 2.
+3. How is the data's quality?
+   * Overall, the quality seems good. 
+</details>
+
+:::
