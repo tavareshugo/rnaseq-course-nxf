@@ -1,6 +1,5 @@
 ---
 title: "Introduction to Bulk RNAseq data analysis"
-subtitle: QC of raw reads with FastQC
 output:
   html_document:
     toc: yes
@@ -9,6 +8,8 @@ output:
   pdf_document:
     toc: yes
 ---
+
+# QC of raw reads with FastQC
 
 In our intial QC of the raw fastq file we will be interested in gathering
 various metrics, such as the total number of reads, sequence length, or GC
