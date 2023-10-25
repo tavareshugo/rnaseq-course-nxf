@@ -5,6 +5,8 @@ output:
     toc: yes
     toc_float: true
     css: ../css/boxes.css
+    includes:
+      in_header: ../css/navbar.html
   pdf_document:
     toc: yes
 bibliography: ref.bib
