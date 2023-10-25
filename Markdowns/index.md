@@ -37,56 +37,66 @@ differential expression analysis of RNA-seq data.
 
 ### Day 1
 
-9:30 - 9:45 - Welcome!
+* 9:30 - 9:45 - Welcome!
 
-9:45 - 10:15 - [Introduction to RNAseq Methods](01_Introduction_to_RNAseq_Methods.html) - Raquel
+* 9:45 - 10:15 - Introduction to RNAseq Methods - Raquel
+  * [Slides](01_Introduction_to_RNAseq_Methods.html)
 
-10:15 - 11:00 [Raw read file format and QC](02_FastQC_introduction.html) - Hugo  
-  - [Practical](02_FastQC_practical.html)  
+* 10:15 - 11:00 Raw read file format and QC - Hugo
+  * [Slides](02_FastQC_introduction.html)
+  * [Practical](02_FastQC_practical.html)
 
-11:00 - 13:30 [Alignment and Quantification of Gene Expression with Salmon](03_Quantification_with_Salmon_introduction.html) - Hugo  
-  - [Practical](03_Quantification_with_Salmon_practical.html)  
+* 11:00 - 12:30 Alignment and Quantification of Gene Expression with Salmon - Hugo
+  * [Slides](03_Quantification_with_Salmon_introduction.html)
+  * [Practical](03_Quantification_with_Salmon_practical.html)
 
-13:30 - 14:30 Lunch
+* 12:30 - 13:30 Lunch
 
-14:30 - 15:30 [QC of alignment](04_Quality_Control_introduction.html) **Nextflow?** - Hugo  
-  - [Practical](04_Quality_Control_practical.html)
+* 14:30 - 15:30 **Nextflow?** - Hugo
+  * Slides (TODO)
+  * Practical (TODO)
 
-15.30 - 17.30 [Data Exploration in R](05_Data_Exploration.html) - Raquel
+* 15.30 - 17.30 Data Exploration in R - Raquel
+  * [Practical](05_Data_Exploration.html)
 
 
 ### Day 2
 
-9:30 - 10:15  [Introduction to RNAseq Analysis in R](06_Introduction_to_RNAseq_Analysis_in_R.html) - Hugo
+* 9:30 - 10:15  Introduction to RNAseq Analysis in R - Hugo
+  * [Slides](06_Introduction_to_RNAseq_Analysis_in_R.html)
 
-10:15 - 13:00 Statistical Analysis of Bulk RNAseq Data
+* 10:15 - 13:00 Statistical Analysis of Bulk RNAseq Data - Hugo
+  * Part I: Statistics of RNA-seq analysis 
+    * [Slides](Bulk_RNAseq_Course_Base/additional_scripts_and_materials/RNA-seq_stats.pdf)
+  * Part II: Linear Models in R and DESeq2
+    * [Slides](Bulk_RNAseq_Course_Base/additional_scripts_and_materials/Statistical_models_in_R_DESeq2.pdf)
+    * [Practical](07_Linear_Models.html)
+    * Find the worksheet in `Course_Materials/stats/models_in_r_worksheet.R`  
 
-- Part I: [Statistics of RNA-seq analysis](Bulk_RNAseq_Course_Base/additional_scripts_and_materials/RNA-seq_stats.pdf) - Hugo
+* 13:00 - 14:00 Lunch
 
-- Part II: [Linear Models in R and DESeq2](07_Linear_Models.html) - Hugo  
-  - [Slides](Bulk_RNAseq_Course_Base/additional_scripts_and_materials/Statistical_models_in_R_DESeq2.pdf)  
-  - Find the worksheet in `Course_Materials/stats/models_in_r_worksheet.R`  
-
-13:00 - 14:00 Lunch
-
-14:00 - 17:30 - [Differential Expression for RNA-seq](08_DE_analysis_with_DESeq2.html) - Raquel
+* 14:00 - 17:30 - Differential Expression for RNA-seq - Raquel
+  * [Practical](08_DE_analysis_with_DESeq2.html)
 
 
 ### Day 3
 
-9.30 - 9.45 - [Recap of Day 1 and 2](Analysis_of_RNA-seq_data_day3recap.pdf) - Raquel
+* 9.30 - 9.45 - Recap of Day 1 and 2 - Raquel
+  * [Slides](Analysis_of_RNA-seq_data_day3recap.pdf)
 
-9.45 - 12.30 [Annotation and Visualisation of RNA-seq results](09_Annotation_and_Visualisation.html) - Raquel
+* 9.45 - 12.30 Annotation and Visualisation of RNA-seq results - Raquel
+  * [Practical](09_Annotation_and_Visualisation.html)
 
-12.30 - 13.30 Lunch
+* 12.30 - 13.30 Lunch
 
-13.30 - 16:30  [Gene-set testing](10_Gene_set_testing_introduction.html) - Hugo  
-  - [Practical (html)](10_Gene_set_testing.html) 
+* 13.30 - 16:30  Gene-set testing - Hugo  
+  * [Slides](10_Gene_set_testing_introduction.html)
+  * [Practical](10_Gene_set_testing.html) 
 
 
 ## Data
 
-TODO
+TODO - add link to download data
 
 
 ## Extended materials

@@ -1,11 +1,44 @@
+/*---- Navigation bar ----*/
+
+.navbar {
+  border-bottom: 1px solid #e8e8e8;
+  min-height: 55.95px;
+  position: relative;
+  background-color: #fdfdfd;
+}
+
+.navbar-content {
+  max-width: calc(1200px - (30px * 2));
+  margin-right: auto;
+  margin-left: auto;
+  padding: 14px 16px;
+}
+
+/* Links inside the navbar */
+.navbar-content a {
+  float: right;
+  display: block;
+  color: #424242;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change background on mouse-over */
+.navbar-content a:hover {
+  background: #e8e8e8;
+  color: black;
+}
+
+
 /*---- "details" element ----*/
-  /* usually used for exercise answers */
+/* usually used for exercise answers */
   
-  details {
-    /*  background: #373c3e;
-      color: #f1f3f4;*/
-      padding: .5rem 1rem;
-  }
+details {
+  /*  background: #373c3e;
+    color: #f1f3f4;*/
+    padding: .5rem 1rem;
+}
 
 details summary {
   cursor: pointer;

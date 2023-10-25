@@ -1342,8 +1342,6 @@ margin-left: auto;
 padding: 14px 16px;
 }
 
-
-
 .navbar-content a {
 float: right;
 display: block;
@@ -1614,6 +1612,7 @@ div.tocify {
 <li>Raquel Manzano Garcia - Cancer Research UK Cambridge Institute</li>
 <li>Erin Doody - Sainsbury Laboratory, University of Cambridge</li>
 <li>Ian Tsang - NIAB</li>
+<li>Ilina Moitra - Department of Zoology, University of Cambridge</li>
 </ul>
 </div>
 <div id="outline" class="section level2">
@@ -1625,42 +1624,84 @@ div.tocify {
 <h2>Timetable</h2>
 <div id="day-1" class="section level3">
 <h3>Day 1</h3>
-<p>9:30 - 9:45 - Welcome!</p>
-<p>9:45 - 10:15 - <a href="01_Introduction_to_RNAseq_Methods.html">Introduction to RNAseq Methods</a> - Chandra</p>
-<p>10:15 - 11:00 <a href="02_FastQC_introduction.html">Raw read file format and QC</a> - Adam<br />
-- <a href="02_FastQC_practical.html">Practical</a></p>
-<p>11:00 - 13:30 <a href="03_Quantification_with_Salmon_introduction.html">Alignment and Quantification of Gene Expression with Salmon</a> - Adam<br />
-- <a href="03_Quantification_with_Salmon_practical.html">Practical</a></p>
-<p>13:30 - 14:30 Lunch</p>
-<p>14:30 - 15:30 <a href="04_Quality_Control_introduction.html">QC of alignment</a> - Abbi<br />
-- <a href="04_Quality_Control_practical.html">Practical</a></p>
-<p>15.30 - 17.30 <a href="05_Data_Exploration.html">Data Exploration in R</a> - Jiayin</p>
+<ul>
+<li><p>9:30 - 9:45 - Welcome!</p></li>
+<li><p>9:45 - 10:15 - Introduction to RNAseq Methods - Raquel</p>
+<ul>
+<li><a href="01_Introduction_to_RNAseq_Methods.html">Slides</a></li>
+</ul></li>
+<li><p>10:15 - 11:00 Raw read file format and QC - Hugo</p>
+<ul>
+<li><a href="02_FastQC_introduction.html">Slides</a></li>
+<li><a href="02_FastQC_practical.html">Practical</a></li>
+</ul></li>
+<li><p>11:00 - 12:30 Alignment and Quantification of Gene Expression with Salmon - Hugo</p>
+<ul>
+<li><a href="03_Quantification_with_Salmon_introduction.html">Slides</a></li>
+<li><a href="03_Quantification_with_Salmon_practical.html">Practical</a></li>
+</ul></li>
+<li><p>12:30 - 13:30 Lunch</p></li>
+<li><p>14:30 - 15:30 <strong>Nextflow?</strong> - Hugo</p>
+<ul>
+<li>Slides (TODO)</li>
+<li>Practical (TODO)</li>
+</ul></li>
+<li><p>15.30 - 17.30 Data Exploration in R - Raquel</p>
+<ul>
+<li><a href="05_Data_Exploration.html">Practical</a></li>
+</ul></li>
+</ul>
 </div>
 <div id="day-2" class="section level3">
 <h3>Day 2</h3>
-<!-- Welcome Announcements - Abbi -->
-<p>9:30 - 10:15 <a href="06_Introduction_to_RNAseq_Analysis_in_R.html">Introduction to RNAseq Analysis in R</a> - Jiayin</p>
-<p>10:15 - 13:00 Statistical Analysis of Bulk RNAseq Data</p>
 <ul>
-<li><p>Part I: <a href="Bulk_RNAseq_Course_Base/additional_scripts_and_materials/RNA-seq_stats.pdf">Statistics of RNA-seq analysis</a> - Chandra</p></li>
-<li><p>Part II: <a href="07_Linear_Models.html">Linear Models in R and DESeq2</a> - Chandra</p>
+<li><p>9:30 - 10:15 Introduction to RNAseq Analysis in R - Hugo</p>
 <ul>
-<li><a href="Bulk_RNAseq_Course_Base/additional_scripts_and_materials/Statistical_models_in_R_DESeq2.pdf">Slides</a><br />
-</li>
+<li><a href="06_Introduction_to_RNAseq_Analysis_in_R.html">Slides</a></li>
+</ul></li>
+<li><p>10:15 - 13:00 Statistical Analysis of Bulk RNAseq Data - Hugo</p>
+<ul>
+<li>Part I: Statistics of RNA-seq analysis
+<ul>
+<li><a href="Bulk_RNAseq_Course_Base/additional_scripts_and_materials/RNA-seq_stats.pdf">Slides</a></li>
+</ul></li>
+<li>Part II: Linear Models in R and DESeq2
+<ul>
+<li><a href="Bulk_RNAseq_Course_Base/additional_scripts_and_materials/Statistical_models_in_R_DESeq2.pdf">Slides</a></li>
+<li><a href="07_Linear_Models.html">Practical</a></li>
 <li>Find the worksheet in <code>Course_Materials/stats/models_in_r_worksheet.R</code></li>
 </ul></li>
+</ul></li>
+<li><p>13:00 - 14:00 Lunch</p></li>
+<li><p>14:00 - 17:30 - Differential Expression for RNA-seq - Raquel</p>
+<ul>
+<li><a href="08_DE_analysis_with_DESeq2.html">Practical</a></li>
+</ul></li>
 </ul>
-<p>13:00 - 14:00 Lunch</p>
-<p>14:00 - 17:30 - <a href="08_DE_analysis_with_DESeq2.html">Differential Expression for RNA-seq</a> - Jon</p>
 </div>
 <div id="day-3" class="section level3">
 <h3>Day 3</h3>
-<p>9.30 - 9.45 - <a href="Analysis_of_RNA-seq_data_day3recap.pdf">Recap of Day 1 and 2</a> - Abbi</p>
-<p>9.45 - 12.30 <a href="09_Annotation_and_Visualisation.html">Annotation and Visualisation of RNA-seq results</a> - Raquel</p>
-<p>12.30 - 13.30 Lunch</p>
-<p>13.30 - 16:30 <a href="10_Gene_set_testing_introduction.html">Gene-set testing</a> - Abbi<br />
-- <a href="10_Gene_set_testing.html">Practical (html)</a></p>
+<ul>
+<li><p>9.30 - 9.45 - Recap of Day 1 and 2 - Raquel</p>
+<ul>
+<li><a href="Analysis_of_RNA-seq_data_day3recap.pdf">Slides</a></li>
+</ul></li>
+<li><p>9.45 - 12.30 Annotation and Visualisation of RNA-seq results - Raquel</p>
+<ul>
+<li><a href="09_Annotation_and_Visualisation.html">Practical</a></li>
+</ul></li>
+<li><p>12.30 - 13.30 Lunch</p></li>
+<li><p>13.30 - 16:30 Gene-set testing - Hugo</p>
+<ul>
+<li><a href="10_Gene_set_testing_introduction.html">Slides</a></li>
+<li><a href="10_Gene_set_testing.html">Practical</a></li>
+</ul></li>
+</ul>
 </div>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>TODO - add link to download data</p>
 </div>
 <div id="extended-materials" class="section level2">
 <h2>Extended materials</h2>
