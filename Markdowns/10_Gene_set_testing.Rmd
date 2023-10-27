@@ -271,7 +271,7 @@ while this
 [commentary on GSEA](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1266131/) 
 provides a shorter description.
 
-![](../images/gseaArticleFig1.png)
+![](images/gseaArticleFig1.png)
 
 We will use `clusterProfiler`'s [`GSEA`](http://yulab-smu.top/clusterProfiler-book/chapter2.html#gene-set-enrichment-analysis) 
 package [@Yu2012] that implements the same algorithm in R. 

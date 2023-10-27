@@ -395,7 +395,7 @@ Create another strip chart for the gene Jchain.
 
 In the paper you may notice they have presented a Venn diagram of the results. 
 
-![](../images/Venn.png)
+![](images/Venn.png)
 
 We will recreate it with our analysis. To do this we are using the package
 `ggvenn` which is an extension to `ggplot` from Linlin Yan.
