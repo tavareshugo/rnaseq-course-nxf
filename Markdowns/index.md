@@ -2,8 +2,6 @@
 title: "Analysis of Bulk RNA-seq Data"
 output:
   html_document:
-    toc: yes
-    toc_float: true
     css: ../css/boxes.css
     includes:
       in_header: ../css/navbar.html
@@ -22,10 +20,10 @@ output:
 
 ## Outline
 
-In this workshop, you will be learning how to analyse RNA-seq data. This will
+In this workshop, you will learn how to analyse bulk RNA-seq data. This will
 include read alignment, quality control, quantification against a reference,
 reading the count data into R, performing differential expression analysis, and
-gene set testing, with a focus on the DESeq2 analysis workflow. You will learn
+gene set testing, with a focus on the _DESeq2_ analysis workflow. You will learn
 how to generate common plots for analysis and visualisation of gene expression
 data, such as boxplots and heatmaps.
 
@@ -101,10 +99,7 @@ TODO - add link to download data
 
 ## Extended materials
 
-The [Extended Materials](Extended_index.md) contain extensions to some of the
-sessions and additional materials, including instruction on downloading and
-processing the raw data for this course, a link to an excellent R course, and
-where to get further help after the course.
+TODO
 
 ## Additional Resources
 
@@ -114,6 +109,9 @@ where to get further help after the course.
 * [RStudio CheatSheets](https://rstudio.com/resources/cheatsheets/)
 
 ## Acknowledgements
+
+These course materials were primarily developed by the [Bioinformatics Core Facility at CRUK-CI](https://www.cruk.cam.ac.uk/core-facilities/bioinformatics-core).
+The original version of these materials can be accessed [here](https://bioinformatics-core-shared-training.github.io/Bulk_RNAseq_Course_Base/).
 
 This course is based on the course [RNAseq analysis in
 R](http://combine-australia.github.io/2016-05-11-RNAseq/) prepared by [Combine
