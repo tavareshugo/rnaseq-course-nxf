@@ -3,7 +3,9 @@ title: "Introduction to Bulk RNAseq data analysis"
 output:
   html_document:
     toc: yes
-    toc_float: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
     css: ../css/boxes.css
     includes:
       in_header: ../css/navbar.html
