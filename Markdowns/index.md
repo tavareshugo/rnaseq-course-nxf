@@ -47,8 +47,8 @@ differential expression analysis of RNA-seq data.
 <p>
 * 12:30 - 13:30 **Lunch**
 <p>
-* 14:30 - 15:30 **Nextflow?** - Hugo
-  * Slides (TODO)
+* 14:30 - 15:30 **Automated RNA-seq Workflows & Quality Control** - Hugo
+  * [Slides](04b_nextflow_rnaseq_introduction.html)
   * [Practical](04b_nextflow_rnaseq_practical.html)
 * 15.30 - 17.30 **Data Exploration in R** - Raquel
   * [Practical](05_Data_Exploration.html)
