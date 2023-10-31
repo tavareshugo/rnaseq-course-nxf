@@ -1670,7 +1670,7 @@ div.tocify {
 <p>The <code>echo</code> command we are given simply prints the number “14” (the chromosome number) to a text file. So, the content of our file is simply:</p>
 <pre><code>14</code></pre>
 <p>It is worth noting that we are doing this because we are only working with a single chromosome for demonstration purposes. In a “real” analysis, we would be using all the chromosomes and so we should instead create a file with all the chromosome names in our reference genome. We can check the chromosome names from the complete reference FASTA file:</p>
-<pre class="bash"><code>grep &quot;&gt;&quot; references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa</code></pre>
+<pre class="bash"><code>zcat references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa.gz | grep &quot;&gt;&quot;</code></pre>
 <details>
 <p><summary>Click to expand output</summary></p>
 <pre><code>&gt;1 dna_sm:chromosome chromosome:GRCm38:1:1:195471971:1 REF
@@ -1741,7 +1741,7 @@ div.tocify {
 &gt;JH584295.1 dna_sm:scaffold scaffold:GRCm38:JH584295.1:1:1976:1 REF</code></pre>
 </details>
 <p>This is a lot of output! The genome assembly includes the autossomal chromosomes (1-19), the sex chromosomes (X and Y) and also several scaffolds that have yet to be assembled into the main genome. If we wanted to create a “decoy” for all these chromosomes, we could use some command line tricks using the <code>sed</code> program to perform text substitution for us:</p>
-<pre class="bash"><code>grep &quot;&gt;&quot; references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa | sed &#39;s/&gt;//&#39; | sed &#39;s/ .*//&#39;</code></pre>
+<pre class="bash"><code>zcat references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa.gz | grep &quot;&gt;&quot; | sed &#39;s/&gt;//&#39; | sed &#39;s/ .*//&#39;</code></pre>
 <details>
 <p><summary>Click to expand output</summary></p>
 <pre><code>1
@@ -1840,10 +1840,10 @@ JH584295.1</code></pre>
 <ul>
 <li><strong>salmon index</strong> - <code>references/salmon_index</code></li>
 <li><code>-l A</code> - Salmon needs to use some information about the library preparation, we could explicitly give this, but it is easy enough for Salmon to <strong>A</strong>utomatically infer this from the data.</li>
-<li><strong>File containing the #1 reads</strong> - <code>fastq/SRR7657883.subset_2M.sra_1.fastq.gz</code></li>
-<li><strong>File containing the #2 reads</strong> - <code>fastq/SRR7657883.subset_2M.sra_2.fastq.gz</code></li>
-<li><strong>Output quantification directory</strong> - <code>salmon_output/SRR7657883</code></li>
-<li><code>--writeMappings=salmon_output/SRR7657883.salmon.sam</code> - Instructs Salmon to output the read alignments in SAM format to the file <code>salmon_output/SRR7657883.salmon.sam</code>.</li>
+<li><strong>File containing the #1 reads</strong> - <code>data/fastq/SRR7657872_1.downsampled.fastq.gz</code></li>
+<li><strong>File containing the #2 reads</strong> - <code>data/fastq/SRR7657872_2.downsampled.fastq.gz</code></li>
+<li><strong>Output quantification directory</strong> - <code>results/salmon/SRR7657872</code></li>
+<li><code>--writeMappings=results/salmon/SRR7657872.salmon.sam</code> - Instructs Salmon to output the read alignments in SAM format to the file <code>salmon_output/SRR7657883.salmon.sam</code>.</li>
 <li><code>--gcBias</code> - salmon can optionally correct for GC content bias, it is recommended to always use this</li>
 <li><strong>The number of threads to use</strong> - <em>7</em></li>
 </ul>
@@ -1852,44 +1852,70 @@ JH584295.1</code></pre>
 <p><summary>Answer</summary></p>
 <p>The full command to run <em>Salmon</em> is:</p>
 <pre class="bash"><code>salmon quant \
-    -i references/salmon_index \
+    -i references/salmon_index_chr14 \
     -l A \
-    -1 fastq/SRR7657883.subset_2M.sra_1.fastq.gz \
-    -2 fastq/SRR7657883.subset_2M.sra_2.fastq.gz \
-    -o salmon_output/SRR7657883 \
-    --writeMappings salmon_output/SRR7657883/SRR7657883.salmon.sam \
-    --gcBias \
+    -1 data/fastq/SRR7657872_1.downsampled.fastq.gz \
+    -2 data/fastq/SRR7657872_2.downsampled.fastq.gz \
+    -o results/salmon/SRR7657872 \
+    --gcBias --seqBias \
     -p 7</code></pre>
 <p>Note that the <code>\</code> is used to split the command across multiple lines. Make sure that there is <strong>no space</strong> after the <code>\</code> symbol, otherwise it will break the code!</p>
 </details>
 </div>
-</div>
-</div>
-<div id="sam-to-bam-conversion" class="section level2">
-<h2>SAM to BAM conversion</h2>
-<p>We can transform from SAM to BAM using <code>samtools</code>. <code>samtools</code> is a toolkit that provides a number of useful tools for working with SAM/BAM files. The BAM file format is a binary (not human readable) file and is considerably smaller than the same data stored in SAM format. We will also sort the alignment entries by location (Contig/Chromosome name and the location on the contig), this further improves the compression of the SAM to BAM. We will use the <code>samtools sort</code> function.</p>
-<p>The general command is:</p>
-<pre class="bash"><code>samtools sort -O BAM -o my_sample.sorted.bam my_sample.sam</code></pre>
-<p>Where the <code>-o</code> option is used to provide the output file name. There are many other options, e.g. reads can be sorted by the read name instead of the position or we can specify the number of parallel threads to be used - to find out more use <code>samtools sort --help</code>.</p>
-<div id="exercise-3" class="section level3">
-<h3>Exercise 3</h3>
-<div class="exercise">
-<ol style="list-style-type: decimal">
-<li><p>Sort and transform your aligned SAM file into a BAM file called <code>SRR7657883.salmon.sorted.bam</code>. Use the option <code>-@ 7</code> to use 7 cores, this vastly speeds up the compression.</p></li>
-<li><p>Use, for example, <code>samtools view my_sample.sorted.bam</code> to check your BAM file.</p></li>
-</ol>
-<details>
-<p><summary>Answer</summary></p>
-<p><strong>1.</strong></p>
-<pre class="bash"><code>samtools sort \
+<!-- 
+## SAM to BAM conversion
+
+We can transform from SAM to BAM using `samtools`. `samtools` is a toolkit that
+provides a number of useful tools for working with SAM/BAM files. The BAM file
+format is a binary (not human readable) file and is considerably smaller than
+the same data stored in SAM format. We will also sort the alignment entries
+by location (Contig/Chromosome name and the location on the contig), this 
+further improves the compression of the SAM to BAM. We will use the 
+`samtools sort` function.
+
+The general command is:
+
+```bash
+samtools sort -O BAM -o my_sample.sorted.bam my_sample.sam
+```
+
+Where the `-o` option is used to provide the output file name. There are many
+other options, e.g. reads can be sorted by the read name instead of the position
+or we can specify the number of parallel threads to be used -  to find out more
+use `samtools sort --help`.
+
+### Exercise 3
+
+:::exercise
+
+1. Sort and transform your aligned SAM file into a BAM file called
+`SRR7657883.salmon.sorted.bam`. Use the option `-@ 7` to use 7 cores, this
+vastly speeds up the compression.
+
+2. Use, for example, `samtools view my_sample.sorted.bam` to check your BAM file.
+
+<details><summary>Answer</summary>
+
+**1.**
+
+```bash
+samtools sort \
   -@ 7 \
   -O BAM \
   -o salmon_output/SRR7657883/SRR7657883.salmon.sorted.bam \
-   salmon_output/SRR7657883/SRR7657883.salmon.sam</code></pre>
-<p><strong>2.</strong></p>
-<pre class="bash"><code>samtools view salmon_output/SRR7657883/SRR7657883.salmon.sorted.bam | less -S</code></pre>
+   salmon_output/SRR7657883/SRR7657883.salmon.sam
+```
+
+**2.**
+
+```bash
+samtools view salmon_output/SRR7657883/SRR7657883.salmon.sorted.bam | less -S
+```
+
 </details>
-</div>
+
+:::
+ -->
 <hr />
 </div>
 </div>

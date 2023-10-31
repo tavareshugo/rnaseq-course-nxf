@@ -110,7 +110,7 @@ The Salmon quantification results are per transcript, we'll want to summarise
 to gene level. To this we need a table that relates transcript IDs to gene IDs.
 
 ```{r readSalmon}
-files <- file.path("salmon", sampleinfo$SampleName, "quant.sf")
+files <- file.path("preprocessed/salmon", sampleinfo$SampleName, "quant.sf")
 names(files) <- sampleinfo$SampleName
 tx2gene <- read_tsv("references/tx2gene.tsv")
 
@@ -122,7 +122,11 @@ head(txi$counts)
 Save the `txi` object for use in later sessions.
 
 ```{r saveData, eval=FALSE}
-saveRDS(txi, file = "salmon_outputs/txi.rds")
+# create the directory if it doesn't exist already
+dir.create("results/r_objects/", recursive = TRUE)
+
+# save the object
+saveRDS(txi, file = "results/r_objects/txi.rds")
 ```
 
 
@@ -461,7 +465,7 @@ sampleinfo <- mutate(sampleinfo,
 ...and export it so that we have the correct version for later use.
 
 ```{r, exportSampleSheet, eval=FALSE}
-write_tsv(sampleinfo, "results/SampleInfo_Corrected.txt")
+write_tsv(sampleinfo, "results/samplesheet_corrected.txt")
 ```
 
 Let's look at the PCA now.

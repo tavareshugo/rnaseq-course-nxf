@@ -153,7 +153,7 @@ In a "real" analysis, we would be using all the chromosomes and so we should ins
 We can check the chromosome names from the complete reference FASTA file: 
 
 ```bash
-grep ">" references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa
+zcat references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa.gz | grep ">"
 ```
 
 <details><summary>Click to expand output</summary>
@@ -234,7 +234,7 @@ The genome assembly includes the autossomal chromosomes (1-19), the sex chromoso
 If we wanted to create a "decoy" for all these chromosomes, we could use some command line tricks using the `sed` program to perform text substitution for us: 
 
 ```bash
-grep ">" references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa | sed 's/>//' | sed 's/ .*//'
+zcat references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa.gz | grep ">" | sed 's/>//' | sed 's/ .*//'
 ```
 
 <details><summary>Click to expand output</summary>
@@ -366,10 +366,10 @@ There are lot of possible parameters, we will need to provide the following:
 
 * **salmon index** - `references/salmon_index`
 * `-l A` - Salmon needs to use some information about the library preparation, we could explicitly give this, but it is easy enough for Salmon to **A**utomatically infer this from the data.
-* **File containing the #1 reads** - `fastq/SRR7657883.subset_2M.sra_1.fastq.gz`
-* **File containing the #2 reads** - `fastq/SRR7657883.subset_2M.sra_2.fastq.gz`
-* **Output quantification directory** - `salmon_output/SRR7657883`
-* `--writeMappings=salmon_output/SRR7657883.salmon.sam` - Instructs Salmon to output the read alignments in SAM format to the file `salmon_output/SRR7657883.salmon.sam`.
+* **File containing the #1 reads** - `data/fastq/SRR7657872_1.downsampled.fastq.gz`
+* **File containing the #2 reads** - `data/fastq/SRR7657872_2.downsampled.fastq.gz`
+* **Output quantification directory** - `results/salmon/SRR7657872`
+* `--writeMappings=results/salmon/SRR7657872.salmon.sam` - Instructs Salmon to output the read alignments in SAM format to the file `salmon_output/SRR7657883.salmon.sam`.
 * `--gcBias` - salmon can optionally correct for GC content bias, it is recommended to always use this
 * **The number of threads to use** - *7*
 
@@ -383,13 +383,12 @@ The full command to run _Salmon_ is:
 
 ```bash
 salmon quant \
-    -i references/salmon_index \
+    -i references/salmon_index_chr14 \
     -l A \
-    -1 fastq/SRR7657883.subset_2M.sra_1.fastq.gz \
-    -2 fastq/SRR7657883.subset_2M.sra_2.fastq.gz \
-    -o salmon_output/SRR7657883 \
-    --writeMappings salmon_output/SRR7657883/SRR7657883.salmon.sam \
-    --gcBias \
+    -1 data/fastq/SRR7657872_1.downsampled.fastq.gz \
+    -2 data/fastq/SRR7657872_2.downsampled.fastq.gz \
+    -o results/salmon/SRR7657872 \
+    --gcBias --seqBias \
     -p 7
 ```
 
@@ -399,7 +398,7 @@ Make sure that there is **no space** after the `\` symbol, otherwise it will bre
 </details>
 :::
 
-
+<!-- 
 ## SAM to BAM conversion
 
 We can transform from SAM to BAM using `samtools`. `samtools` is a toolkit that
@@ -452,7 +451,7 @@ samtools view salmon_output/SRR7657883/SRR7657883.salmon.sorted.bam | less -S
 </details>
 
 :::
-
+ -->
 ----------------------------------------------------------
 
 ## References
