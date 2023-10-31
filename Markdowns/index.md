@@ -49,7 +49,7 @@ differential expression analysis of RNA-seq data.
 <p>
 * 14:30 - 15:30 **Nextflow?** - Hugo
   * Slides (TODO)
-  * Practical (TODO)
+  * [Practical](04b_nextflow_rnaseq_practical.html)
 * 15.30 - 17.30 **Data Exploration in R** - Raquel
   * [Practical](05_Data_Exploration.html)
 
