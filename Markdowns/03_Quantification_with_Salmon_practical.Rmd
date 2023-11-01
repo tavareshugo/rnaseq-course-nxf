@@ -29,7 +29,7 @@ An alternative is to use faster methods known as *quasi-mapping* or
 approach has been developed over the past few years and has the advantages of
 being faster and more lightweight than full alignment (they can be run on a
 laptop rather than needing a high performance cluster). In addition these
-methods give more accurate estimates of gene expression at the transcript level
+methods give **more accurate estimates of gene expression** at the transcript level
 and incorporate corrections for GC-content bias and sequence bias. They are also
 able to quantify multimapping reads in a more pragmatic manner than the standard
 alignment/counting approaches giving more accurate counts, particularly for
@@ -111,19 +111,20 @@ itself.
     * the **transcript fasta file** - `references/gentrome.chr14.fa.gz`
     * the **decoys** - `references/decoys.txt`
     * the **salmon index** - a directory to write the index to, use `references/salmon_index_chr14`
-   Also add `-p 7` to the command to instruct salmon to use 7 threads/cores.
-   To find the option names for the other three pieces of information use `salmon index --help`
+    * also add `-p 7` to the command to instruct salmon to use 7 threads/cores
+   
+To find the option names for the other three pieces of information use `salmon index --help`
 
 One thing to note here is that we have not specified the `-k` parameter. This
-parameter sets the kmer size that the index will be based on and relates to
-the minimum size of kmer used for quasi-mapping. The default is 31 bases, and
+parameter sets the k-mer size that the index will be based on and relates to
+the minimum size of k-mer used for quasi-mapping. The default is 31 bases, and
 this is fine for read sizes over 75 bases. If your read size is less that 75,
-you would need to adjust this. You should set the kmer size to slightly less
-than half of the read length. Quasi-mapping looks for kmers that are perfect
-match to the reference sequence. If the kmer size is more than half the read
+you would need to adjust this. You should set the k-mer size to slightly less
+than half of the read length. Quasi-mapping looks for k-mers that are perfect
+match to the reference sequence. If the k-mer size is more than half the read
 length, then a read with a mismatch in the middle of the read will never be
 able to be mapped to the transcriptome, even if all other bases are a perfect
-match for the sequence at the location that it originated.
+match for the sequence at the location that it originated from.
 
 <details><summary>Answer</summary>
 
@@ -231,10 +232,10 @@ zcat references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa.gz | grep ">"
 
 This is a lot of output! 
 The genome assembly includes the autossomal chromosomes (1-19), the sex chromosomes (X and Y) and also several scaffolds that have yet to be assembled into the main genome. 
-If we wanted to create a "decoy" for all these chromosomes, we could use some command line tricks using the `sed` program to perform text substitution for us: 
+If we wanted to create a "decoy" for all these chromosomes, we could use some command line tricks using the `cut` and `sed` programs to extract this information: 
 
 ```bash
-zcat references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa.gz | grep ">" | sed 's/>//' | sed 's/ .*//'
+zcat references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa.gz | grep ">" | cut -d " " -f 1 | sed 's/>//'
 ```
 
 <details><summary>Click to expand output</summary>
@@ -310,10 +311,12 @@ JH584295.1
 
 </details>
 
-- The first `sed` substitutes the ">" character by nothing. 
-- The second `sed` substitutes a space " " followed by any characters (that's what `.*` means - it's a regular expression) by nothing.
+- `cut -d " " -f 1` extracts the first element (**f**ield) of values that is separated (**d**elimited) by a space.
+- `sed` is an advanced program that can be used for text manipulation. 
+  In this case we are using it to substitute the `>` character by nothing. 
+  See [this tutorial](https://cambiotraining.github.io/unix-shell/materials/04-misc/01-sed.html) for more about this `sed` functionality.
 
-We could then have redirected `>` the output of the command above to a `decoys.txt` file to use with Salmon. 
+Finally, we could then have redirected `>` the output of the command above to a `decoys.txt` file to use with Salmon. 
 
 **3.**
 
@@ -342,18 +345,18 @@ from our raw fastq files.
 
 We can use the full index here as this step is relatively quick. The full index
 should already be in the references directory: `references/salmon_index`. For
-this exercise we'll just quantify one sample: **SRR7657883**. We've already run
+this exercise we'll just quantify one sample: **SRR7657872**. We've already run
 salmon on the complete data set. You can see the results in the `salmon`
 directory. We'll use this for the differential gene expression analysis in later
 sessions.
 
-We are going to be asking Salmon to output the read alignments as a SAM file as 
+<!-- We are going to be asking Salmon to output the read alignments as a SAM file as 
 well as the gene expression quantification results. This is optional but we
 would like this information for some QC. Unfortunately, this does cause Salmon
 to take longer and running Salmon like this on the full fastq takes about 20
 minutes. For the purposes of this practical we will use a smaller fastq file
 with just 2 million reads - this way we can run Salmon in a reasonable time.
-The files we will use are called *SRR7657883.subset_2M....*.
+The files we will use are called *SRR7657872.subset_2M....*. -->
 
 
 ### Exercise 2 - Quantify with Salmon
@@ -369,13 +372,13 @@ There are lot of possible parameters, we will need to provide the following:
 * **File containing the #1 reads** - `data/fastq/SRR7657872_1.downsampled.fastq.gz`
 * **File containing the #2 reads** - `data/fastq/SRR7657872_2.downsampled.fastq.gz`
 * **Output quantification directory** - `results/salmon/SRR7657872`
-* `--writeMappings=results/salmon/SRR7657872.salmon.sam` - Instructs Salmon to output the read alignments in SAM format to the file `salmon_output/SRR7657883.salmon.sam`.
-* `--gcBias` - salmon can optionally correct for GC content bias, it is recommended to always use this
+* `--gcBias` and `--seqBias` - salmon can optionally correct for GC content and sequence composition biases; it is recommended to always use these options
 * **The number of threads to use** - *7*
 
 Salmon creates a separate output directory for each sample analysed. This 
 directory contains a number of files; the file that contains the quantification
-data is called `quant.sf`.
+data is called `quant.sf`. 
+Once _Salmon_ completes running, investigate the content of this file using the `head` command. 
 
 <details><summary>Answer</summary>
 
@@ -394,6 +397,25 @@ salmon quant \
 
 Note that the `\` is used to split the command across multiple lines. 
 Make sure that there is **no space** after the `\` symbol, otherwise it will break the code!
+
+Once _Salmon_ completes running, we can investigate the output file using: 
+
+```bash
+head results/salmon/SRR7657872/quant.sf
+```
+
+```
+Name	Length	EffectiveLength	TPM	NumReads
+ENSMUST00000177564.1	16	15.000	0.000000	0.000
+ENSMUST00000196221.1	9	9.000	0.000000	0.000
+ENSMUST00000179664.1	11	11.000	0.000000	0.000
+ENSMUST00000199137.1	347	102.000	0.000000	0.000
+ENSMUST00000103679.2	444	195.000	9.341818	2.000
+ENSMUST00000103685.2	438	189.000	0.000000	0.000
+ENSMUST00000103664.5	343	99.000	0.000000	0.000
+ENSMUST00000103638.5	379	131.000	6.952880	1.000
+ENSMUST00000103641.5	381	133.000	0.000000	0.000
+```
 
 </details>
 :::
@@ -425,7 +447,7 @@ use `samtools sort --help`.
 :::exercise
 
 1. Sort and transform your aligned SAM file into a BAM file called
-`SRR7657883.salmon.sorted.bam`. Use the option `-@ 7` to use 7 cores, this
+`SRR7657872.salmon.sorted.bam`. Use the option `-@ 7` to use 7 cores, this
 vastly speeds up the compression.
 
 2. Use, for example, `samtools view my_sample.sorted.bam` to check your BAM file.
@@ -438,14 +460,14 @@ vastly speeds up the compression.
 samtools sort \
   -@ 7 \
   -O BAM \
-  -o salmon_output/SRR7657883/SRR7657883.salmon.sorted.bam \
-   salmon_output/SRR7657883/SRR7657883.salmon.sam
+  -o salmon_output/SRR7657872/SRR7657872.salmon.sorted.bam \
+   salmon_output/SRR7657872/SRR7657872.salmon.sam
 ```
 
 **2.**
 
 ```bash
-samtools view salmon_output/SRR7657883/SRR7657883.salmon.sorted.bam | less -S
+samtools view salmon_output/SRR7657872/SRR7657872.salmon.sorted.bam | less -S
 ```
 
 </details>
