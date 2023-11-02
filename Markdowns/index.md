@@ -47,10 +47,10 @@ differential expression analysis of RNA-seq data.
 <p>
 * 12:30 - 13:30 **Lunch**
 <p>
-* 14:30 - 15:30 **Automated RNA-seq Workflows & Quality Control** - Hugo
+* 13:30 - 15:00 **Automated RNA-seq Workflows & Quality Control** - Hugo
   * [Slides](04b_nextflow_rnaseq_introduction.html)
   * [Practical](04b_nextflow_rnaseq_practical.html)
-* 15.30 - 17.30 **Data Exploration in R** - Raquel
+* 15.00 - 17.30 **Data Exploration in R** - Raquel
   * [Practical](05_Data_Exploration.html)
 
 
@@ -66,9 +66,9 @@ differential expression analysis of RNA-seq data.
     * [Practical](07_Linear_Models.html)
     * Find the worksheet in `Course_Materials/stats/models_in_r_worksheet.R`  
 <p>
-* 13:00 - 14:00 **Lunch**
+* 12:30 - 13:30 **Lunch**
 <p>
-* 14:00 - 17:30 - **Differential Expression for RNA-seq** - Raquel
+* 13:30 - 17:30 - **Differential Expression for RNA-seq** - Raquel
   * [Practical](08_DE_analysis_with_DESeq2.html)
 
 
@@ -81,7 +81,7 @@ differential expression analysis of RNA-seq data.
 <p>
 * 12.30 - 13.30 **Lunch**
 <p>
-* 13.30 - 16:30  **Gene-set testing** - Hugo  
+* 13.30 - 17:30  **Gene-set testing** - Hugo  
   * [Slides](10_Gene_set_testing_introduction.html)
   * [Practical](10_Gene_set_testing.html) 
 
