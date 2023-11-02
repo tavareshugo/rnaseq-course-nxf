@@ -1647,14 +1647,15 @@ div.tocify {
 </ul>
 <p><strong>2.</strong></p>
 <ul>
-<li>Use <code>ls</code> to list the contents of the directory. There should be directory called <strong>fastq</strong>.</li>
-<li>Use <code>ls</code> again to list the contents of the <strong>fastq</strong> directory: <code>ls fastq</code></li>
-<li>You should see two fastq files called <em>SRR7657883.sra_1.fastq.gz</em> and <em>SRR7657883.sra_1.fastq.gz</em>. These are the files for read 1 and read 2 of one of the samples we will be working with (you can ignore the other fastq files for now).</li>
+<li>Use <code>ls</code> to list the contents of the directory. There should be directory called <strong>data</strong>. Inside that directory there should be another directory called <strong>fastq</strong>.</li>
+<li>Use <code>ls</code> again to list the contents of the <strong>fastq</strong> directory: <code>ls data/fastq</code></li>
+<li>You should see several fastq files with <em>.fastq.gz</em> extension. These are the files for read 1 and read 2 of one of the samples we will be working with.</li>
 </ul>
 <p><strong>3.</strong></p>
 <ul>
-<li>Create a directory to output the FASTQC results: <code>mkdir results/fastqc</code></li>
-<li>Run <code>fastqc</code> on both fastq files: <code>bash     fastqc -t 8 -o results/fastqc/ fastq/*</code></li>
+<li><p>Create a directory to output the FASTQC results: <code>mkdir results/fastqc</code></p></li>
+<li><p>Run <code>fastqc</code> on both fastq files:</p>
+<pre class="bash"><code>fastqc -t 8 -o results/fastqc/ data/fastq/*</code></pre></li>
 </ul>
 <p><strong>4.</strong></p>
 <p>Open the html report for either of the files (your choice) in a browser and see if you can answer these questions:</p>
@@ -1672,13 +1673,14 @@ div.tocify {
 <pre class="bash"><code>cd ~/Course_Materials</code></pre>
 <p><strong>2.</strong></p>
 <p>Once we’re in that directory, we ran <code>ls</code>, which showed:</p>
-<pre><code>AnnotationHubCache  bam   fastq    picard      salmon          small_bams
-RObjects            data  metrics  references  salmon_outputs  stats</code></pre>
-<p>These directories contain several files we will use throghout the course. We can the see “fastq” directory mentioned, and we can list its contents:</p>
-<pre class="bash"><code>ls fastq</code></pre>
-<pre><code>SRR7657883.sra_1.fastq.gz
-SRR7657883.sra_2.fastq.gz</code></pre>
-<p>These are the two FASTQ files (compressed with the gzip program, thus the <code>.gz</code> extension at the end).</p>
+<pre><code>data  preprocessed  references  results</code></pre>
+<p>These directories contain several files we will use throghout the course. We can the see “fastq” directory inside “data” as mentioned. We can list its contents with:</p>
+<pre class="bash"><code>ls data/fastq</code></pre>
+<pre><code>SRR7657872_1.downsampled.fastq.gz  SRR7657876_1.downsampled.fastq.gz
+SRR7657872_2.downsampled.fastq.gz  SRR7657876_2.downsampled.fastq.gz
+SRR7657874_1.downsampled.fastq.gz  SRR7657877_1.downsampled.fastq.gz
+SRR7657874_2.downsampled.fastq.gz  SRR7657877_2.downsampled.fastq.gz</code></pre>
+<p>These are the FASTQ files (compressed with the gzip program, thus the <code>.gz</code> extension at the end). For each sample we have files for the two read pairs, with suffix &quot;_1&quot; and &quot;_2&quot;.</p>
 <p><strong>3.</strong></p>
 <p>Running the FASTQC command given, we obtain information about the analysis progress printed on the terminal:</p>
 <pre><code>TODO</code></pre>
