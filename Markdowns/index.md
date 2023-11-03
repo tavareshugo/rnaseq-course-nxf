@@ -47,28 +47,21 @@ differential expression analysis of RNA-seq data.
 <p>
 * 12:30 - 13:30 **Lunch**
 <p>
-* 13:30 - 15:00 **Automated RNA-seq Workflows & Quality Control** - Hugo
+* 13:30 - 14:30 **Alignment and Quantification of Gene Expression with Salmon** - continued
+* 14:30 - 17:00 **Automated RNA-seq Workflows & Quality Control** - Hugo
   * [Slides](04b_nextflow_rnaseq_introduction.html)
   * [Practical](04b_nextflow_rnaseq_practical.html)
-* 15.00 - 17.30 **Data Exploration in R** - Raquel
-  * [Practical](05_Data_Exploration.html)
-
 
 ### Day 2
 
-* 9:30 - 10:15  **Introduction to RNAseq Analysis in R** - Hugo
-  * [Slides](06_Introduction_to_RNAseq_Analysis_in_R.html)
-* 10:15 - 13:00 **Statistical Analysis of Bulk RNAseq Data** - Hugo
-  * Part I: **Statistics of RNA-seq analysis** 
-    * [Slides](Bulk_RNAseq_Course_Base/additional_scripts_and_materials/RNA-seq_stats.pdf)
-  * Part II: **Linear Models in R and DESeq2**
-    * [Slides](Bulk_RNAseq_Course_Base/additional_scripts_and_materials/Statistical_models_in_R_DESeq2.pdf)
-    * [Practical](07_Linear_Models.html)
-    * Find the worksheet in `Course_Materials/stats/models_in_r_worksheet.R`  
+* 09:30 - 12.30 **Data Exploration in R** - Raquel
+  * [Practical](05_Data_Exploration.html)
 <p>
 * 12:30 - 13:30 **Lunch**
 <p>
-* 13:30 - 17:30 - **Differential Expression for RNA-seq** - Raquel
+* 13:30 - 15:30 **Statistical Analysis of Bulk RNAseq Data** - Hugo
+  * Links to be added
+* 15:30 - 17:00 - **Differential Expression for RNA-seq** - Raquel
   * [Practical](08_DE_analysis_with_DESeq2.html)
 
 
@@ -76,12 +69,14 @@ differential expression analysis of RNA-seq data.
 
 * 9.30 - 9.45 - **Recap of Day 1 and 2** - Raquel
   * [Slides](Analysis_of_RNA-seq_data_day3recap.pdf)
-* 9.45 - 12.30 **Annotation and Visualisation of RNA-seq results** - Raquel
+* 09:45 - 11:00 - **Differential Expression for RNA-seq** - continued
+* 11:00 - 12.30 **Annotation and Visualisation of RNA-seq results** - Raquel
   * [Practical](09_Annotation_and_Visualisation.html)
 <p>
 * 12.30 - 13.30 **Lunch**
 <p>
-* 13.30 - 17:30  **Gene-set testing** - Hugo  
+* 13:30 - 14.30 **Annotation and Visualisation of RNA-seq results** - continued
+* 14.30 - 17:00  **Gene-set testing** - Hugo  
   * [Slides](10_Gene_set_testing_introduction.html)
   * [Practical](10_Gene_set_testing.html) 
 

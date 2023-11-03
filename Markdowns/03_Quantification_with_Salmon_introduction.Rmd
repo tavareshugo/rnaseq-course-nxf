@@ -131,7 +131,7 @@ Methods like _Salmon_ attempt to mitigate the effect of technical biases by
 <img src="images/Salmon_workflow_2.png" class="centerimg" style="height: 400px">
 
 :::centered
-Patro *et al.* (2017) Nature Methods doi:10.1038/nmeth.4197
+Patro *et al.* (2017) Nature Methods [doi:10.1038/nmeth.4197](https://doi.org/10.1038/nmeth.4197)
 :::
 
 

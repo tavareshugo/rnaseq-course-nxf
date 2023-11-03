@@ -166,13 +166,27 @@ For this exercise, we will use small FASTQ files for 4 of our samples and run th
 This is so the pipeline completes within a reasonable time. 
 
 1. Create a new directory in the course materials folder called `scripts`.
-2. Create a new shell script inside that folder called `01-rnaseq_workflow.sh` and copy/paste the _Nextflow_ command shown above.
+2. Create a new shell script inside that folder called `01-rnaseq_workflow.sh` and copy/paste the _Nextflow_ command shown below.
   You can use the command-line text editor `nano` or another text editor of your choice. 
+  
+    ```bash
+    nextflow run nf-core/rnaseq \
+      -r 3.12.0 -profile singularity \
+      --max_cpus 8 --max_memory 15.GB \
+      --input data/nextflow_samplesheet.csv \
+      --outdir results/rnaseq \
+      --fasta "$PWD/references/Mus_musculus.GRCm38.dna_sm.chr14.fa.gz" \
+      --gtf "$PWD/references/Mus_musculus.GRCm38.102.chr14.gtf.gz" \
+      --aligner star_salmon \
+      --extra_salmon_quant_args "--seqBias --gcBias" \
+      --skip_deseq2_qc
+    ```
+  
 3. Run the shell script using `bash`. 
   Based on the file paths specified in the `--input` and `--output` options, think about which directory you should be launching the script from. 
 
 Make sure the pipeline starts running without any apparent errors, printing its progress on the screen.
-It will take some time to run, so you can leave it running to complete. 
+It will take ~1h to run, so you can leave it running to complete. 
 We will look at its outputs in the next section. 
 
 <details><summary>Answer</summary>
@@ -201,10 +215,10 @@ nextflow run nf-core/rnaseq \
   --max_cpus 8 --max_memory 15.GB \
   --input data/nextflow_samplesheet.csv \
   --outdir results/rnaseq \
-  --fasta $PWD/references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa \
-  --gtf $PWD/references/Mus_musculus.GRCm38.102.gtf.gz \
+  --fasta "$PWD/references/Mus_musculus.GRCm38.dna_sm.chr14.fa.gz" \
+  --gtf "$PWD/references/Mus_musculus.GRCm38.102.chr14.gtf.gz" \
   --aligner star_salmon \
-  --extra_salmon_quant_args '--seqBias --gcBias' \
+  --extra_salmon_quant_args "--seqBias --gcBias" \
   --skip_deseq2_qc
 ```
 

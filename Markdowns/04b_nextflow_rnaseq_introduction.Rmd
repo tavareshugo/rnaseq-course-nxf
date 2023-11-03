@@ -119,7 +119,7 @@ nextflow run nf-core/rnaseq \
   --max_cpus 8 --max_memory 15.GB \
   --input data/nextflow_samplesheet.csv \
   --outdir results/rnaseq \
-  --fasta "$PWD/references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa" \
+  --fasta "$PWD/references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa.gz" \
   --gtf "$PWD/references/Mus_musculus.GRCm38.102.gtf.gz" \
   --aligner star_salmon \
   --extra_salmon_quant_args "--seqBias --gcBias" \

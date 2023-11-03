@@ -40,7 +40,7 @@ library(tidyverse)
 Now load the data from the earlier session.
 
 ```{r loadData}
-txi <- readRDS("RObjects/txi.rds")
+txi <- readRDS("preprocessed/r_objects/txi.rds")
 sampleinfo <- read_tsv("data/samplesheet_corrected.tsv", col_types = "cccc")
 ```
 

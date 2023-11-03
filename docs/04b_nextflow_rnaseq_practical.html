@@ -1719,11 +1719,21 @@ Succeeded   : 343</code></pre>
 <div class="exercise">
 <p>For this exercise, we will use small FASTQ files for 4 of our samples and run them through the <code>nf-core/rnaseq</code> workflow. This is so the pipeline completes within a reasonable time.</p>
 <ol style="list-style-type: decimal">
-<li>Create a new directory in the course materials folder called <code>scripts</code>.</li>
-<li>Create a new shell script inside that folder called <code>01-rnaseq_workflow.sh</code> and copy/paste the <em>Nextflow</em> command shown above. You can use the command-line text editor <code>nano</code> or another text editor of your choice.</li>
-<li>Run the shell script using <code>bash</code>. Based on the file paths specified in the <code>--input</code> and <code>--output</code> options, think about which directory you should be launching the script from.</li>
+<li><p>Create a new directory in the course materials folder called <code>scripts</code>.</p></li>
+<li><p>Create a new shell script inside that folder called <code>01-rnaseq_workflow.sh</code> and copy/paste the <em>Nextflow</em> command shown below. You can use the command-line text editor <code>nano</code> or another text editor of your choice.</p>
+<pre class="bash"><code>nextflow run nf-core/rnaseq \
+  -r 3.12.0 -profile singularity \
+  --max_cpus 8 --max_memory 15.GB \
+  --input data/nextflow_samplesheet.csv \
+  --outdir results/rnaseq \
+  --fasta &quot;$PWD/references/Mus_musculus.GRCm38.dna_sm.chr14.fa.gz&quot; \
+  --gtf &quot;$PWD/references/Mus_musculus.GRCm38.102.chr14.gtf.gz&quot; \
+  --aligner star_salmon \
+  --extra_salmon_quant_args &quot;--seqBias --gcBias&quot; \
+  --skip_deseq2_qc</code></pre></li>
+<li><p>Run the shell script using <code>bash</code>. Based on the file paths specified in the <code>--input</code> and <code>--output</code> options, think about which directory you should be launching the script from.</p></li>
 </ol>
-<p>Make sure the pipeline starts running without any apparent errors, printing its progress on the screen. It will take some time to run, so you can leave it running to complete. We will look at its outputs in the next section.</p>
+<p>Make sure the pipeline starts running without any apparent errors, printing its progress on the screen. It will take ~1h to run, so you can leave it running to complete. We will look at its outputs in the next section.</p>
 <details>
 <p><summary>Answer</summary></p>
 <p><strong>Question 1</strong></p>
@@ -1740,10 +1750,10 @@ nextflow run nf-core/rnaseq \
   --max_cpus 8 --max_memory 15.GB \
   --input data/nextflow_samplesheet.csv \
   --outdir results/rnaseq \
-  --fasta $PWD/references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa \
-  --gtf $PWD/references/Mus_musculus.GRCm38.102.gtf.gz \
+  --fasta &quot;$PWD/references/Mus_musculus.GRCm38.dna_sm.chr14.fa.gz&quot; \
+  --gtf &quot;$PWD/references/Mus_musculus.GRCm38.102.chr14.gtf.gz&quot; \
   --aligner star_salmon \
-  --extra_salmon_quant_args &#39;--seqBias --gcBias&#39; \
+  --extra_salmon_quant_args &quot;--seqBias --gcBias&quot; \
   --skip_deseq2_qc</code></pre>
 <p>We also added a shebang (<code>#!/bin/bash</code>), which is good practice when writing shell scripts and commented our code.</p>
 <hr />
