@@ -19,7 +19,7 @@ bibliography: ref.bib
 
 ```{r setup, echo=FALSE}
 options(tibble.print_max = 4, tibble.print_min = 4, max.print=40, 
-        tibble.max_extra_cols=2)
+        tibble.max_extra_cols = 2)
 knitr::opts_knit$set(root.dir = here::here("course_files"))
 ```
 
@@ -36,8 +36,8 @@ from the Differential Expression analysis.
 
 ```{r loadData}
 dds <- readRDS("preprocessed/r_objects/dds_interaction_model.rds")
-res_infected_vs_uninfected_d11 <- readRDS("preprocessed/r_objects/res_infected_vs_uninfected_d11.rds")
-res_infected_vs_uninfected_d33 <- readRDS("preprocessed/r_objects/res_infected_vs_uninfected_d33.rds")
+res_d11 <- readRDS("preprocessed/r_objects/res_infected_vs_uninfected_d11.rds")
+res_d33 <- readRDS("preprocessed/r_objects/res_infected_vs_uninfected_d33.rds")
 ```
 
 ## Adding annotation to the DESeq2 results
@@ -110,7 +110,7 @@ annot <- annot %>%
   # select columns with gene names/ids
   select(gene_id, gene_name, entrezid) %>%
   # keep only genes in our data
-  filter(gene_id %in% rownames(res_infected_vs_uninfected_d11))
+  filter(gene_id %in% rownames(res_d11))
 ```
 
 :::warning
@@ -137,7 +137,7 @@ packages, this time being sure to load **tidyverse** last, or just use
 ```{r maskingSolutino, eval = FALSE}
 annot <- annotations %>%
   dplyr::select(gene_id, gene_name, entrezid) %>%
-  dplyr::filter(gene_id %in% rownames(res_infected_vs_uninfected_d11))
+  dplyr::filter(gene_id %in% rownames(res_d11))
 ```
 :::
 
@@ -192,7 +192,7 @@ results table.
 ```{r addAnnotation, message=FALSE}
 ensembl_annot <- readRDS("preprocessed/r_objects/ensembl_annotations.rds")
 colnames(ensembl_annot)
-res_d11_annot <- as.data.frame(res_infected_vs_uninfected_d11) %>% 
+res_d11_annot <- as.data.frame(res_d11) %>% 
     rownames_to_column("GeneID") %>% 
     left_join(ensembl_annot, "GeneID")
 ```
@@ -200,7 +200,7 @@ res_d11_annot <- as.data.frame(res_infected_vs_uninfected_d11) %>%
 Finally we can output the annotation DE results using `write_tsv()`:
 
 ```{r outputDEtables, eval=FALSE}
-write_tsv(res_d11_annot, "results/res_infected_vs_uninfected_d11_annotated.tsv")
+write_tsv(res_d11_annot, "results/res_d11_annotated.tsv")
 ```
 
 
@@ -230,7 +230,7 @@ will use it for our visualisation of the data.
 
 ```{r shrinkLFC}
 res_d11_shrink <- lfcShrink(dds, 
-                            res = res_infected_vs_uninfected_d11,
+                            res = res_d11,
                             type = "ashr")
 
 res_d11_shrink_annot <- as.data.frame(res_d11_shrink) %>%
@@ -248,9 +248,9 @@ conditions being contrasted. `DESeq2` has a handy function for plotting this.
 Let's use it too compare the shrunk and un-shrunk fold changes.
 
 ```{r maPlotDESeq2, fig.align="center", fig.width=10, fig.height=5}
-par(mfrow=c(1,2))
-plotMA(res_infected_vs_uninfected_d11, alpha=0.05)
-plotMA(res_d11_shrink, alpha=0.05)
+par(mfrow = c(1,2))
+plotMA(res_d11, alpha = 0.05)
+plotMA(res_d11_shrink, alpha = 0.05)
 ```
 
 The DESeq2 in `plotMA` function is fine for a quick look, but these inbuilt
@@ -299,7 +299,7 @@ more significant genes have a higher scale.
 
 ```{r volcano11Plot, fig.align="center", fig.width=5, fig.height=5}
 ggplot(res_d11_shrink_annot, aes(x = log2FoldChange, y = -log10(pvalue))) +
-    geom_point(aes(colour = padj < 0.05), size=1) +
+    geom_point(aes(colour = padj < 0.05), size = 1) +
     geom_text(data = ~top_n(.x, 1, wt = -padj), aes(label = Symbol)) +
     labs(x = "log2(fold change)", y = "-log10(p-value)", colour = "FDR < 5%",
          title = "Infected vs Uninfected (day 11)")
@@ -318,7 +318,7 @@ copy and paste the code below.
 
 ```{r eval=FALSE}
 # First load data and annotations
-res_infected_vs_uninfected_d33 <- readRDS("preprocessed/r_objects/res_infected_vs_uninfected_d33.rds")
+res_d33 <- readRDS("preprocessed/r_objects/res_d33.rds")
 ensembl_annot <- readRDS("preprocessed/r_objects/ensembl_annotations.rds")
 ```
 
@@ -328,7 +328,7 @@ Shrink the results for the 33 days contrast.
 ```{r, echo=FALSE}
 #Shrink our values
 res_d33_shrink <- lfcShrink(dds, 
-                            res = res_infected_vs_uninfected_d33,
+                            res = res_d33,
                             type = "ashr")
 
 res_d33_shrink_annot <- as.data.frame(res_d11_shrink) %>%
@@ -342,7 +342,7 @@ the first volcano plot
 
 ```{r echo=FALSE, eval=FALSE}
 ggplot(res_d11_shrink_annot, aes(x = log2FoldChange, y = -log10(pvalue))) + 
-    geom_point(aes(colour = padj < 0.05), size=1) +
+    geom_point(aes(colour = padj < 0.05), size = 1) +
     labs(x = "log2(fold change)", y = "-log10(p-value)", colour = "FDR < 5%",
          title = "Infected vs Uninfected (day 33)")
 ```
@@ -383,10 +383,10 @@ plotCounts(dds,
            gene = geneID, 
            intgroup = c("TimePoint", "Status", "Replicate"),
            returnData = T) %>% 
-  ggplot(aes(x=Status, y=log2(count))) +
-    geom_point(aes(fill=Replicate), shape=21, size=2) +
+  ggplot(aes(x = Status, y = log2(count))) +
+    geom_point(aes(fill = Replicate), shape = 21, size = 2) +
     facet_wrap(~TimePoint) +
-    expand_limits(y=0) +
+    expand_limits(y = 0) +
     labs(title = "Normalised counts - Interleukin 10 receptor, alpha")
 ```
 
@@ -415,19 +415,19 @@ First we have to prepare the data with a column for each set we want in the
 Venn. The final table should look like this:
 
 ```{r echo=FALSE}
-tibble(Geneid = rownames(res_infected_vs_uninfected_d11)) %>% 
-  mutate(Upregulated_11 = res_infected_vs_uninfected_d11$padj < 0.05 & 
-         !is.na(res_infected_vs_uninfected_d11$padj) & 
-         res_infected_vs_uninfected_d11$log2FoldChange > 0) %>% 
-  mutate(Downregulated_11 = res_infected_vs_uninfected_d11$padj < 0.05 & 
-         !is.na(res_infected_vs_uninfected_d11$padj) & 
-         res_infected_vs_uninfected_d11$log2FoldChange < 0) %>%
-  mutate(Upregulated_33 = res_infected_vs_uninfected_d33$padj < 0.05 & 
-         !is.na(res_infected_vs_uninfected_d33$padj) & 
-         res_infected_vs_uninfected_d33$log2FoldChange > 0) %>%
-  mutate(Downregulated_33 = res_infected_vs_uninfected_d33$padj < 0.05 & 
-         !is.na(res_infected_vs_uninfected_d33$padj) & 
-         res_infected_vs_uninfected_d33$log2FoldChange < 0) 
+tibble(Geneid = rownames(res_d11)) %>% 
+  mutate(Upregulated_11 = res_d11$padj < 0.05 & 
+         !is.na(res_d11$padj) & 
+         res_d11$log2FoldChange > 0) %>% 
+  mutate(Downregulated_11 = res_d11$padj < 0.05 & 
+         !is.na(res_d11$padj) & 
+         res_d11$log2FoldChange < 0) %>%
+  mutate(Upregulated_33 = res_d33$padj < 0.05 & 
+         !is.na(res_d33$padj) & 
+         res_d33$log2FoldChange > 0) %>%
+  mutate(Downregulated_33 = res_d33$padj < 0.05 & 
+         !is.na(res_d33$padj) & 
+         res_d33$log2FoldChange < 0) 
 ```
 
 The first column contains the gene ids. The remaining columns are the four sets
@@ -443,23 +443,23 @@ the gene is included in that set.
 
 
 ```{r, fig.align="center", fig.width=10, fig.height=8}
-vennDat <- tibble(Geneid = rownames(res_infected_vs_uninfected_d11)) %>% 
+vennDat <- tibble(Geneid = rownames(res_d11)) %>% 
 
-  mutate(Upregulated_11 = res_infected_vs_uninfected_d11$padj < 0.05 & 
-                          !is.na(res_infected_vs_uninfected_d11$padj) & 
-                          res_infected_vs_uninfected_d11$log2FoldChange > 0) %>% 
+  mutate(Upregulated_11 = res_d11$padj < 0.05 & 
+                          !is.na(res_d11$padj) & 
+                          res_d11$log2FoldChange > 0) %>% 
 
-  mutate(Downregulated_11 = res_infected_vs_uninfected_d11$padj < 0.05 & 
-                            !is.na(res_infected_vs_uninfected_d11$padj) & 
-                            res_infected_vs_uninfected_d11$log2FoldChange < 0) %>%
+  mutate(Downregulated_11 = res_d11$padj < 0.05 & 
+                            !is.na(res_d11$padj) & 
+                            res_d11$log2FoldChange < 0) %>%
 
-  mutate(Upregulated_33 = res_infected_vs_uninfected_d33$padj < 0.05 & 
-                          !is.na(res_infected_vs_uninfected_d33$padj) & 
-                          res_infected_vs_uninfected_d33$log2FoldChange > 0) %>%
+  mutate(Upregulated_33 = res_d33$padj < 0.05 & 
+                          !is.na(res_d33$padj) & 
+                          res_d33$log2FoldChange > 0) %>%
 
-  mutate(Downregulated_33 = res_infected_vs_uninfected_d33$padj < 0.05 & 
-                            !is.na(res_infected_vs_uninfected_d33$padj) & 
-                            res_infected_vs_uninfected_d33$log2FoldChange < 0) 
+  mutate(Downregulated_33 = res_d33$padj < 0.05 & 
+                            !is.na(res_d33$padj) & 
+                            res_d33$log2FoldChange < 0) 
 
 ggvenn(vennDat, set_name_size = 4)
 ```
@@ -501,7 +501,7 @@ means 1 standard deviation higher than the mean, '-1' means 1 standard deviation
 lower than the mean.
 
 ```{r z-scale}
-z_matrix <- t(scale(t(plot_data), center=TRUE, scale=TRUE))
+z_matrix <- t(scale(t(plot_data), center = TRUE, scale = TRUE))
 ```
 
 ```{r colourScale}
@@ -532,7 +532,7 @@ Whenever we teach this session several student always ask how to set the
 colours of the bars at the top of the heatmap. This is shown below.
 
 ```{r ColouredsplitHeatmap, fig.width=5, fig.height=8}
-ha1 = HeatmapAnnotation(df = colData(dds)[,c("Status", "TimePoint")], 
+ha1 = HeatmapAnnotation(df = colData(dds)[, c("Status", "TimePoint")], 
                         col = list(Status = c("Uninfected" = "darkgreen", 
                                               "Infected" = "palegreen"), 
                                    TimePoint = c("d11" = "lightblue", 
@@ -541,7 +541,7 @@ ha1 = HeatmapAnnotation(df = colData(dds)[,c("Status", "TimePoint")],
 Heatmap(z_matrix, name = "z-score",
         col = my_ramp,
         show_row_name = FALSE,
-        split=3,
+        split = 3,
         rect_gp = gpar(col = "lightgrey", lwd=0.3),
         top_annotation = ha1)
 ```
@@ -549,14 +549,14 @@ Heatmap(z_matrix, name = "z-score",
 If you want, you can save some of the tables generated with this analysis, in particular those with the annotated results (including the gene names):
 
 ```{r saveEnvironment, eval=FALSE}
-saveRDS(res_d11_annot, file="results/r_objects/res_infected_vs_uninfected_annotated.rds")
-saveRDS(res_d11_shrink_annot, file="results/r_objects/res_infected_vs_uninfected_annotated.rds")
-saveRDS(res_d11_shrink_annot, file="results/r_objects/res_infected_vs_uninfected_annotated.rds")
+saveRDS(res_d11_annot, file = "results/r_objects/res_infected_vs_uninfected_annotated.rds")
+saveRDS(res_d11_shrink_annot, file = "results/r_objects/res_infected_vs_uninfected_annotated.rds")
+saveRDS(res_d11_shrink_annot, file = "results/r_objects/res_infected_vs_uninfected_annotated.rds")
 ```
 
 ```{r saveObjects, eval=FALSE, echo=FALSE}
 # for reference in case trainers change materials - make sure to re-export the objects
-saveRDS(res_d11_annot, file="preprocessed/r_objects/Annotated_Results.d11.rds")
-saveRDS(res_d11_shrink_annot, file="preprocessed/r_objects/Shrunk_Results.d11.rds")
-saveRDS(res_d11_shrink_annot, file="preprocessed/r_objects/Shrunk_Results.d33.rds")
+saveRDS(res_d11_annot, file = "preprocessed/r_objects/Annotated_Results.d11.rds")
+saveRDS(res_d11_shrink_annot, file = "preprocessed/r_objects/Shrunk_Results.d11.rds")
+saveRDS(res_d11_shrink_annot, file = "preprocessed/r_objects/Shrunk_Results.d33.rds")
 ```
