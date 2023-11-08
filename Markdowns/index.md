@@ -54,31 +54,35 @@ differential expression analysis of RNA-seq data.
 
 ### Day 2
 
-* 09:30 - 12.30 **Data Exploration in R** - Raquel
+* 09:30 - 10:00 **Recap** - Hugo
+* 10:00 - 12.30 **Data Exploration in R** - Raquel
   * [Practical](05_Data_Exploration.html)
 <p>
 * 12:30 - 13:30 **Lunch**
 <p>
 * 13:30 - 15:30 **Statistical Analysis of Bulk RNAseq Data** - Hugo
-  * Links to be added
-* 15:30 - 17:00 - **Differential Expression for RNA-seq** - Raquel
+  * [Slides](https://docs.google.com/presentation/d/1euDFiNCQXVedAQRPC8M9_2Kk943Fg_2eb9J6YI6nxk8/edit?usp=sharing)
+  * [Linear models in R and DESeq2](07_Linear_Models.html)
+* 15:30 - 17:00 - **Differential Expression for RNA-seq: one predictor** - Raquel
   * [Practical](08_DE_analysis_with_DESeq2.html)
 
 
 ### Day 3
 
-* 9.30 - 9.45 - **Recap of Day 1 and 2** - Raquel
-  * [Slides](Analysis_of_RNA-seq_data_day3recap.pdf)
-* 09:45 - 11:00 - **Differential Expression for RNA-seq** - continued
-* 11:00 - 12.30 **Annotation and Visualisation of RNA-seq results** - Raquel
-  * [Practical](09_Annotation_and_Visualisation.html)
+* 9.30 - 9.45 - **Recap of Day 1 and 2** - Hugo
+* 09:45 - 11:00 **Statistical Analysis of Bulk RNAseq Data: two predictors** - Hugo
+  * [Slides](https://docs.google.com/presentation/d/1euDFiNCQXVedAQRPC8M9_2Kk943Fg_2eb9J6YI6nxk8/edit?usp=sharing)
+  * [Linear models in R and DESeq2](07_Linear_Models.html)
+* 11:00 - 12:30 - **Part II: Differential Expression for RNA-seq: two predictors** - Raquel
+  * [Practical](08_DE_analysis_with_DESeq2.html)
 <p>
 * 12.30 - 13.30 **Lunch**
 <p>
-* 13:30 - 14.30 **Annotation and Visualisation of RNA-seq results** - continued
-* 14.30 - 17:00  **Gene-set testing** - Hugo  
+* 13:30 - 16:00 **Annotation and Visualisation of RNA-seq results** - Raquel
+  * [Practical](09_Annotation_and_Visualisation.html)
+* 16:00 - 17.00 **Gene-set testing** (overview only if we have time) - Hugo  
   * [Slides](10_Gene_set_testing_introduction.html)
-  * [Practical](10_Gene_set_testing.html) 
+  * [Practical](10_Gene_set_testing.html)
 
 
 ## Data
