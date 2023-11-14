@@ -549,9 +549,10 @@ Heatmap(z_matrix, name = "z-score",
 If you want, you can save some of the tables generated with this analysis, in particular those with the annotated results (including the gene names):
 
 ```{r saveEnvironment, eval=FALSE}
-saveRDS(res_d11_annot, file = "results/r_objects/res_infected_vs_uninfected_annotated.rds")
-saveRDS(res_d11_shrink_annot, file = "results/r_objects/res_infected_vs_uninfected_annotated.rds")
-saveRDS(res_d11_shrink_annot, file = "results/r_objects/res_infected_vs_uninfected_annotated.rds")
+saveRDS(res_d11_annot, file = "results/r_objects/res_infected_vs_uninfected_d11_annotated.rds")
+saveRDS(res_d33_annot, file = "results/r_objects/res_infected_vs_uninfected_d33_annotated.rds")
+saveRDS(res_d11_shrink_annot, file = "results/r_objects/res_infected_vs_uninfected_d11_annotated_shrink.rds")
+saveRDS(res_d33_shrink_annot, file = "results/r_objects/res_infected_vs_uninfected_d33_annotated_shrink.rds")
 ```
 
 ```{r saveObjects, eval=FALSE, echo=FALSE}
