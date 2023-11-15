@@ -87,15 +87,14 @@ differential expression analysis of RNA-seq data.
 
 ## Data
 
-TODO - add link to download data
+If you want to recreate the analysis on your computer, you can download the data from here: 
 
+[Dropbox: Analysis of Bulk RNA-seq](https://www.dropbox.com/scl/fo/6l98g9dygvntzvfsv1d88/h?rlkey=ow7gvsye5hih20ye50cnmy7yw&dl=0)
 
-## Extended materials
-
-TODO
 
 ## Additional Resources
 
+* [Modern Statistics for Modern Biology](https://www.huber.embl.de/msmb/08-chap.html) - a fantastic resource to go deeper into some of the topics covered in this course. In particular chapter 8 of this book covers the statistical models for count data used in RNA-seq.
 * [Bioconductor for relevant R packages](https://bioconductor.org/)
 * [DESeq2 Vignette](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)  
 * [RNAseq Workflow](http://master.bioconductor.org/packages/release/workflows/vignettes/rnaseqGene/inst/doc/rnaseqGene.html)  

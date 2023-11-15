@@ -649,7 +649,7 @@ example_interaction %>%
                arrow = arrow(length = unit(0.03, "npc"))) + 
   annotate(geom = "text", x = 1.7, y = 3.5, label = "beta[3]", parse = TRUE) +
   annotate(geom = "segment", x = 1.8, xend = 1.8, y = 3, yend = 4, 
-           colour = "red4", size = 1,
+           colour = "red4", linewidth = 1,
            arrow = arrow(length = unit(0.03, "npc"))) + 
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
@@ -1001,7 +1001,7 @@ example_interaction %>%
                arrow = arrow(length = unit(0.03, "npc"))) + 
   annotate(geom = "text", x = 1.7, y = 3.5, label = "beta[3]", parse = TRUE) +
   annotate(geom = "segment", x = 1.8, xend = 1.8, y = 3, yend = 4, 
-           # colour = "red4", size = 1,
+           # colour = "red4", linewidth = 1,
            arrow = arrow(length = unit(0.03, "npc"))) + 
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
