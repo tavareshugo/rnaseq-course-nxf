@@ -393,7 +393,7 @@ Remember to check the [GSEA
 article](http://www.pnas.org/content/102/43/15545.full) for the complete 
 explanation.
 
-### Exercise 2 {.exercise}
+### Exercise 2
 
 :::exercise
 Another common way to rank the genes is to order by p-value while sorting,
@@ -519,7 +519,6 @@ as_tibble(gsea_res_d33) %>%
   mutate(across(c("pvalue", "p.adjust", "qvalue"), scales::scientific)) %>% 
   DT::datatable(option=list(dom='t'))
 ```
-
 
 </details>
 :::
