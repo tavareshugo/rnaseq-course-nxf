@@ -27,7 +27,7 @@ differential expression analysis of RNA-seq data.
 (Note: session times are approximate)
 
 | Time|Topic|Links|
-|-----|-----|-----|
+|----:|-----|:----|
 |15 min|**Welcome!**||
 |30 min|**Introduction to RNAseq Methods** |[Slides](01_Introduction_to_RNAseq_Methods.html)|
 |45 min|**Raw read file format and QC** |[Slides](02_FastQC_introduction.html)<br>[Practical](02_FastQC_practical.html)|
@@ -41,6 +41,18 @@ differential expression analysis of RNA-seq data.
 |2 h 30 min|**Annotation and Visualisation of RNA-seq results**|[Practical](09_Annotation_and_Visualisation.html)|
 |1 h|**Gene-set testing** (overview only if we have time)|[Slides](10_Gene_set_testing_introduction.html)<br>[Practical](10_Gene_set_testing.html)|
 
+<!-- https://stackoverflow.com/a/58338258 -->
+<style>
+table th:first-of-type {
+    width: 10%;
+}
+table th:nth-of-type(2) {
+    width: 70%;
+}
+table th:nth-of-type(3) {
+    width: 20%;
+}
+</style>
 
 ## Data
 
