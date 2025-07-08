@@ -31,10 +31,8 @@ data, such as boxplots and heatmaps.
 |2 h 30 min|**Alignment and Quantification of Gene Expression with Salmon** |[Slides](03_Quantification_with_Salmon_introduction.html)<br>[Practical](03_Quantification_with_Salmon_practical.html)|
 |2 h 30 min|**Automated RNA-seq Workflows & Quality Control** |[Slides](04b_nextflow_rnaseq_introduction.html)<br>[Practical](04b_nextflow_rnaseq_practical.html)|
 |2 h 30 min|**Data Exploration in R**|[Practical](05_Data_Exploration.html)|
-|2 h|**Statistical Analysis of Bulk RNAseq Data**|[Slides](https://docs.google.com/presentation/d/1euDFiNCQXVedAQRPC8M9_2Kk943Fg_2eb9J6YI6nxk8/edit?usp=sharing)<br>[Linear models in R and DESeq2](07_Linear_Models.html)|
-|1 h 30 min|**Differential Expression for RNA-seq: one predictor**|[Practical](08_DE_analysis_with_DESeq2.html)|
-|1 h 15 min|**Statistical Analysis of Bulk RNAseq Data: two predictors**|[Slides](https://docs.google.com/presentation/d/1euDFiNCQXVedAQRPC8M9_2Kk943Fg_2eb9J6YI6nxk8/edit?usp=sharing)<br>[Linear models in R and DESeq2](07_Linear_Models.html)|
-|1 h 30 min|**Part II: Differential Expression for RNA-seq: two predictors**|[Practical](08_DE_analysis_with_DESeq2.html)|
+|2 h|**Statistical Analysis of Bulk RNAseq Data**|[Slides](https://docs.google.com/presentation/d/1euDFiNCQXVedAQRPC8M9_2Kk943Fg_2eb9J6YI6nxk8/edit?usp=sharing)<br>[Practical](07_Linear_Models.html)|
+|1 h 30 min|**Differential Expression for RNA-seq**|[Practical](08_DE_analysis_with_DESeq2.html)|
 |2 h 30 min|**Annotation and Visualisation of RNA-seq results**|[Practical](09_Annotation_and_Visualisation.html)|
 |1 h|**Gene-set testing** (overview only if we have time)|[Slides](10_Gene_set_testing_introduction.html)<br>[Practical](10_Gene_set_testing.html)|
 
