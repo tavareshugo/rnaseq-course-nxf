@@ -18,9 +18,6 @@ gene set testing, with a focus on the _DESeq2_ analysis workflow. You will learn
 how to generate common plots for analysis and visualisation of gene expression
 data, such as boxplots and heatmaps.
 
-This workshop is aimed at biologists interested in learning how to perform
-differential expression analysis of RNA-seq data.
-
 
 ## Topics
 

@@ -45,14 +45,14 @@ Workflow managers help to solve this challenge:
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/6/60/Nextflow_logo.png" class="centerimg" style="width: 50%">
 
-<img src="https://snakemake.github.io/img/jk/logo.png" class="centerimg" style="width: 50%; background-color:#002221">
+<img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Snakemake_logo_dark.png?20220226072335" class="centerimg" style="width: 50%; background-color:#002221">
 
 ## Nextflow 
 
 * Active community of users and developers
 
 * Many community-developed pipelines available online 
-  * [**nf-core project**](https://nf-co.re/): collection of well-documented, best-practice bioinformatic workflow repositories
+  * [**nf-core project**](https://nf-co.re/): collection of well-documented, best-practices bioinformatic workflow repositories
 
 <img src="https://raw.githubusercontent.com/nf-core/logos/master/nf-core-logos/nf-core-logo.png" class="centerimg" style="width: 50%">
 
@@ -67,7 +67,7 @@ Check out the list of [current pipelines](https://nf-co.re/pipelines) available 
 Best-practices workflow for RNA-seq data processing (up to expression quantification).
 :::
 
-<img src="https://raw.githubusercontent.com/nf-core/rnaseq/3.12.0/docs/images/nf-core-rnaseq_metro_map_grey.png" class="centerimg" style="height: 400px">
+<img src="https://raw.githubusercontent.com/nf-core/rnaseq/3.19.0/docs/images/nf-core-rnaseq_metro_map_grey.png" class="centerimg" style="height: 400px">
 
 
 ## RNA-seq workflow: `nf-core/rnaseq`
@@ -82,7 +82,7 @@ Best-practices workflow for RNA-seq data processing (up to expression quantifica
 
 * **Alignment** of reads to a reference genome using _STAR_ → allows to extract **quality metrics** of interest.
 
-<img src="https://raw.githubusercontent.com/nf-core/rnaseq/3.12.0/docs/images/nf-core-rnaseq_metro_map_grey.png" class="centerimg" style="height: 200px">
+<img src="https://raw.githubusercontent.com/nf-core/rnaseq/3.19.0/docs/images/nf-core-rnaseq_metro_map_grey.png" class="centerimg" style="height: 200px">
 
 
 ## `nf-core/rnaseq`: the samplesheet
@@ -111,12 +111,11 @@ SRR7657877,fastq/SRR7657877_1.fastq.gz,fastq/SRR7657877_2.fastq.gz,auto
 **Check the [usage documentation](https://nf-co.re/rnaseq/latest/docs/usage)!**
 :::
 
-## `nf-core/rnaseq`: running
+## How to run `nf-core/rnaseq`
 
 ```bash
 nextflow run nf-core/rnaseq \
-  -r 3.12.0 -profile singularity \
-  --max_cpus 8 --max_memory 15.GB \
+  -r 3.19.0 -profile singularity \
   --input data/nextflow_samplesheet.csv \
   --outdir results/rnaseq \
   --fasta "$PWD/references/Mus_musculus.GRCm38.dna_sm.primary_assembly.fa.gz" \
@@ -131,15 +130,12 @@ Make sure that there is **no space** after the `\` symbol, otherwise it will bre
 
 ::: notes
 * **`nextflow run nf-core/rnaseq`** indicates we want to run the workflow available from https://github.com/nf-core/rnaseq. This will automatically download all the workflow files, if it's the first time you run it. 
-* **`-r 3.12.0`** indicates we want to run version 3.12.0 of the pipeline (at the time of writing this is the latest version available at https://nf-co.re/rnaseq/). 
+* **`-r 3.19.0`** indicates we want to run version 3.19.0 of the pipeline (at the time of writing this is the latest version available at https://nf-co.re/rnaseq/). 
   If you don't include this option, the latest version available will be used. 
   When working on a project, it's a good idea to fix the version used at the time, so in the future you can reproduce the exact same analysis if needed.
 * **`-profile singularity`** is the mode we want to use for software management. 
   Singularity is recommended when running analysis on HPC clusters. 
   An alternative is to use `docker` (which you would need to install separately on your computer).
-* **`--max_cpus`** and **`--max_memory`** are options that restrict the pipeline to use those many resources. 
-  When running the analysis on a HPC you should not set this options. 
-  However, since we are running this on a local computer, we set the options to match the available resources on our computer. 
 * **`--input`** is the samplesheet CSV file containing information about our samples names and the directory paths to their respective FASTQ files. 
   We covered this format in the previous section, and it is also detailed in the [documentation](https://nf-co.re/rnaseq/latest/docs/usage).
 * **`--outdir`** is the output directory where we want our results to be saved. This directory will be created if it does not already exist.
@@ -281,7 +277,7 @@ Duplication rates in RNAseq can be > 40%, therefore duplicate removal in RNA-seq
 
 R/Bioconductor package [`dupRadar`](https://bioconductor.org/packages/release/bioc/vignettes/dupRadar/inst/doc/dupRadar.html) considers the relationship between transcript length, transcript expression level and duplicate rates. 
 
-<img src="https://raw.githubusercontent.com/nf-core/rnaseq/3.12.0/docs/images/dupradar_example_plot.png" class="centerimg" style="height: 400px">
+<img src="https://raw.githubusercontent.com/nf-core/rnaseq/3.19.0/docs/images/dupradar_example_plot.png" class="centerimg" style="height: 400px">
 
 
 ## Transcript coverage
@@ -293,11 +289,13 @@ A 3' bias may indicate poor RNA quality due to RNA degradation.
 <img src="images/TranscriptCoverage.svg" class="centerimg" style="height: 400px">
 
 
-## Complexity curve
+## Junction saturation
 
 Would more sequencing be beneficial? 
 
-<img src="https://raw.githubusercontent.com/nf-core/rnaseq/3.12.0/docs/images/mqc_preseq_plot.png" class="centerimg" style="height: 400px">
+Splice site saturation plot gives an indication if more sequencing would be beneficial: known junctions plateau early, while novel junctions need deeper coverage.
+
+<img src="https://raw.githubusercontent.com/nf-core/rnaseq/3.19.0/docs/images/mqc_rseqc_junctionsaturation.png" class="centerimg" style="height: 400px">
 
 <!-- ## QC of aligned reads - Insert Size
 
