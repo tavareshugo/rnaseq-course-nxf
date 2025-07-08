@@ -38,6 +38,11 @@ one of the authors of DESeq2, about deciding which to use.
 
 We will use **DESeq2** for the rest of this practical.
 
+To start with we will need three pieces of information to pass to DESeq2:
+
+* The raw counts data
+* The sample metadata
+* The design for our linear model
 
 ## Load data
 
@@ -492,7 +497,7 @@ with an additive model. Realistically, we expect the two factors interact such
 that differences in gene expression between infected and uninfected mice are not 
 the same at different time points:
 
-![[**PDF version**](images/AdditiveAndInteractionModels.pdf)](images/AdditiveAndInteractionModels.png)
+![](images/AdditiveAndInteractionModels.png)
 
 Let's plot a PCA from `vst` transformed data. 
 Can you anticipate if the interaction term will be important?

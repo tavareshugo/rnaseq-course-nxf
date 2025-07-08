@@ -46,10 +46,9 @@ In this session we will:
 
 * import our counts into R  
 * filter out unwanted genes  
-* look at the effects of variance and how to mitigate this with data 
-transformation
-* do some initial exploration of the raw count data using principle component 
-analysis  
+* transform the data to address the variance properties inherent to count data
+* do some initial exploration of the raw count data using principal component 
+analysis (PCA) and hierarchical clustering
 
 ## Data import
 
@@ -188,22 +187,20 @@ rawCounts <- round(txi$counts, 0)
 
 <!-- prefiltering -->
 
-For many analysis methods it is advisable to filter out as many genes as 
-possible before the analysis to decrease the impact of multiple testing
-correction on false discovery rates. This is normally done
-by filtering out genes with low numbers of reads and thus likely to be 
-uninformative.
+Many, if not most, of the genes in our annotation will not have been detected at
+meaningful levels in our samples - very low counts are most likely technical
+noise rather than biology. For the purposes of visualization it is important to
+remove the genes that are not expressed in order to avoid them dominating the
+patterns that we observe.
 
-With `DESeq2` this is however not necessary as it applies `independent
-filtering` during the analysis. On the other hand, some filtering for 
-genes that are very lowly expressed does reduce the size of the data matrix, 
-meaning that less memory is required and processing steps are carried out 
-faster. Furthermore, for the purposes of visualization it is important to remove
-the genes that are not expressed in order to avoid them dominating the patterns
-that we observe.
-
-We will keep all genes where the total number of reads across all samples is 
-greater than 5.
+The level at which you filter at this stage will not effect the differential
+expression analysis. The cutoff used for filtering is a balance between removing
+noise and keeping biologically relevant information. A common approach is to
+remove genes that have less than a certain number of reads across all samples.
+The exact level is arbitrary and will depend to some extent on nature of the
+dataset (overall read depth per sample, number of samples, balance of read depth
+between samples etc). We will keep all genes where the total number of reads
+across all samples is greater than 5.
 
 ```{r filterGenes}
 # check dimension of count matrix
@@ -228,9 +225,9 @@ but for visualization purposes we use transformed counts.
 
 Why not raw counts? Two issues:
 
-* Raw counts range is very large
-* Variance increases with mean gene expression, this has impact on assessing
-  the relationships.
+* The range of values in raw counts is very large with many small values and a few
+  genes with very large values. This can make it difficult to see patterns in the
+  data.
 
 ```{r raw_summary}
 summary(filtCounts)
@@ -240,6 +237,9 @@ summary(filtCounts)
 # few outliers affect distribution visualization
 boxplot(filtCounts, main='Raw counts', las=2)
 ```
+
+* Variance increases with mean gene expression, this has impact on assessing
+  the relationships, e.g. by clustering.
 
 ```{r raw_mean_vs_sd}
 # Raw counts mean expression Vs standard Deviation (SD)
@@ -251,45 +251,20 @@ plot(rowMeans(filtCounts), rowSds(filtCounts),
 
 ### Data transformation
 
-To avoid problems posed by raw counts, they can be [transformed](http://www.bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#data-transformations-and-visualization).
-Several transformation methods exist to limit the dependence of variance on mean gene expression:
+To avoid problems posed by raw counts, they can be
+[transformed](http://www.bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#data-transformations-and-visualization).
 
-* Simple log2 transformation
-* VST : variance stabilizing transformation
-* rlog : regularized log transformation
-
-#### log2 transformation
-
-Because some genes are not expressed (detected) in some samples, their count are `0`. As log2(0) returns -Inf in R which triggers errors by some functions, we add 1 to every count value to create 'pseudocounts'. The lowest value then is 1, or 0 on the log2 scale (log2(1) = 0).
+A simple log2 transformation can be used to overcome the issue of the range of
+values. Note, when using a log transformation, it is important to add a small
+"pseudocount" to the data to avoid taking the log of zero.
 
 ```{r logTransform}
 # Get log2 counts
 logcounts <- log2(filtCounts + 1)
 ```
 
-We will check the distribution of read counts using a boxplot and add some
-colour to see if there is any difference between sample groups.
-
-```{r plotLogCounts}
-# make a colour vector
-statusCols <- case_when(sampleinfo$Status=="Infected" ~ "red", 
-                        sampleinfo$Status=="Uninfected" ~ "orange")
-
-# Check distributions of samples using boxplots
-boxplot(logcounts,
-        xlab="",
-        ylab="Log2(Counts)",
-        las=2,
-        col=statusCols,
-        main="Log2(Counts)")
-# Let's add a blue horizontal line that corresponds to the median
-abline(h=median(logcounts), col="blue")
-```
-
-From the boxplots we see that overall the density distributions of raw
-log-counts are not identical but still not very different. If a sample is really
-far above or below the blue horizontal line (overall median) we may need to
-investigate that sample further.
+However, this transformation does not account for the mean-variance
+relationship, which is typical of RNA-seq count data: 
 
 ```{r log2_mean_vs_sd}
 # Log2 counts standard deviation (sd) vs mean expression
@@ -297,60 +272,34 @@ plot(rowMeans(logcounts), rowSds(logcounts),
      main='Log2 Counts: sd vs mean')
 ```
 
-In contrast to raw counts, with log2 transformed counts lowly expressed genes show higher variation.
+DESeq2 provides two additional functions for transforming the data:
 
-#### VST : variance stabilizing transformation
+* `VST` : variance stabilizing transformation
+* `rlog` : regularized log transformation
 
-Variance stabilizing transformation (VST) aims at generating a matrix of values for which variance is constant across the range of mean values, especially for low mean.
+As well as log2 transforming the data, both transformations produce data which
+has been normalized with respect to library size and deal with the mean-variance
+relationship. The effects of the two transformations are similar. `rlog` is
+preferred when there is a large difference in library size between samples,
+however, it is considerably slower than `VST` and is not recommended for large
+datasets. For more information on the differences between the two
+transformations see the
+[paper](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8)
+and the DESeq2 vignette.
 
-The `vst` function computes the fitted dispersion-mean relation, derives the transformation to apply and accounts for library size.
+Our data set is small, so we will use `rlog` for the transformation.
 
 ```{r vst_counts, message=FALSE}
-vst_counts <- vst(filtCounts)
-
-# Check distributions of samples using boxplots
-boxplot(vst_counts, 
-        xlab="", 
-        ylab="VST counts",
-        las=2,
-        col=statusCols)
-# Let's add a blue horizontal line that corresponds to the median
-abline(h=median(vst_counts), col="blue")
+rlogcounts <- rlog(filtCounts)
+boxplot(rlogcounts, main = 'rlog counts', las = 2)
 ```
 
 ```{r vst_mean_vs_sd}
 # VST counts standard deviation (sd) vs mean expression
-plot(rowMeans(vst_counts), rowSds(vst_counts), 
-     main='VST counts: sd vs mean')
+plot(rowMeans(rlogcounts), rowSds(rlogcounts), 
+     main='rlog counts: sd vs mean')
 ```
 
-### Exercise 2
-
-:::exercise
-
-1. Use the `DESeq2` function `rlog` to transform the count data. This function
-   also normalises for library size.
-2. Plot the count distribution boxplots with this data  
-   How has this affected the count distributions?
-
-<details><summary>Answer</summary>
-
-
-```{r solutionExercise2}
-rlogcounts <- rlog(filtCounts)
-
-# Check distributions of samples using boxplots
-boxplot(rlogcounts, 
-        xlab="", 
-        ylab="Log2(Counts)",
-        las=2,
-        col=statusCols)
-# Let's add a blue horizontal line that corresponds to the median logCPM
-abline(h=median(as.matrix(rlogcounts)), col="blue")
-```
-
-</details>
-:::
 
 ## Principal Component Analysis
 
@@ -495,9 +444,9 @@ replicate. If the PCA plot showed separation of samples by time, it might be
 worthwhile including time in the downstream analysis to account for the
 time-based effect.
 
-## Hierachical clustering
+## Hierarchical clustering
 
-Earlier, we used principle component analysis to assess sources of variation
+Earlier, we used principal component analysis to assess sources of variation
 in the data set and the relationship between the samples. Another method for
 looking at the relationship between the samples can be to run hierarchical 
 clustering based on the Euclidean distance between the samples. Hierarchical

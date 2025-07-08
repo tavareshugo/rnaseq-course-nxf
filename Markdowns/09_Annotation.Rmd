@@ -1,0 +1,235 @@
+---
+title: "Introduction to Bulk RNAseq data analysis"
+date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
+output:
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    css: ../css/boxes.css
+    includes:
+      in_header: ../css/navbar.html
+  pdf_document:
+    toc: yes
+bibliography: ref.bib
+---
+
+# Annotation and Visualisation of Differential Expression Results
+
+```{r setup, echo=FALSE}
+options(tibble.print_max = 4, tibble.print_min = 4, max.print=40, 
+        tibble.max_extra_cols = 2)
+knitr::opts_knit$set(root.dir = here::here("course_files"))
+```
+
+```{r packages, message=FALSE, warning=F}
+library(AnnotationHub)
+library(AnnotationDbi)
+library(ensembldb)
+library(DESeq2)
+library(tidyverse)
+```
+
+Before starting this section, we will make sure we have all the relevant objects
+from the Differential Expression analysis.
+
+```{r loadData}
+dds <- readRDS("preprocessed/r_objects/dds_interaction_model.rds")
+res_d11 <- readRDS("preprocessed/r_objects/res_infected_vs_uninfected_d11.rds")
+res_d33 <- readRDS("preprocessed/r_objects/res_infected_vs_uninfected_d33.rds")
+```
+
+## Adding annotation to the DESeq2 results
+
+We have a list of significantly diferentially expressed genes, but the only
+annotation we can see is the Ensembl Gene ID, which is not very informative. 
+
+There are a number of ways to add annotation. One method is to do this using a 
+Bioconductor annotation package. These packages which are re-built every 
+periodically with the latest annotations. These packages are listed on the 
+[annotation section](http://bioconductor.org/packages/release/BiocViews.html#___AnnotationData) 
+of the Bioconductor, and are installed in the same way as regular Bioconductor 
+packages. 
+
+An another approach is to use `biomaRt`, an interface to the 
+[BioMart](http://www.biomart.org/) resource. Using BioMart ensures that you are 
+able to get the latest annotations for the GeneIDs, and can match the version of
+the gene annotation that was used for read counting.
+
+A third method is to use `AnnotationHub`, this is like the bioconductor
+packages but in an online database like `bioMaRt`. They keep them slightly more
+up to date than the standard bioconductor packages and each time you use them
+the results are cached on your machine. 
+
+Today we will use the `AnnotationHub` method. A workflow for annotation with
+biomaRt is included in the extended materials section accessible on the course
+website.
+
+## Query the database
+
+First we need to get the correct database from `AnnotationHub`. We make the
+instance (the first time we do this it will create a local cache on your
+machine so that repeat queries are very quick). 
+
+As you can see `ah` contains huge amounts of information and it is constantly
+changing. This is why it gives us the snapshot date so we know when our cached
+version is from. The `ah` object actually online contains pointers to where all
+the information is online and we don't want to download all of them as it would
+take a very long time and we don't need all of it.
+
+This object is a vector and you can get information about a single resource by
+indexing with a single bracket `[` or download a resource with a double bracket
+`[[`.
+
+```{r, makeOrgDb, message=F}
+# create an annotationhub instance
+ah <- AnnotationHub()
+ah
+
+ah[1]
+
+# Download the database we want to use
+mouse_ensdb <- query(ah, c("EnsDb", "Mus musculus", "102"))[[1]]
+```
+
+This database contains the entire gene annotation from Ensembl release 102 for
+mouse. It includes descriptions of genes, transcripts, exons, UTRs etc. 
+
+We can turn the whole gene-level annotation table into a data frame so we can
+work with it using the tidyverse suite of tools.
+
+```{r queryOrgDb, message=F}
+annot <- genes(mouse_ensdb, return.type = "data.frame")
+
+# lets see what information we have
+colnames(annot)
+
+# extract only some columns/rows of interest
+annot <- annot %>%
+  # select columns with gene names/ids
+  select(gene_id, gene_name, entrezid) %>%
+  # keep only genes in our data
+  filter(gene_id %in% rownames(res_d11))
+```
+
+:::warning
+You may get an error with this command that looks like:
+
+```{css, echo=FALSE}
+.error {
+   color: red;
+}
+```
+
+```{class.source="error"}
+Error in (function (classes, fdef, mtable)  : 
+  unable to find an inherited method for function 'select' for signature '"data.frame"'
+```
+
+This is due to the `select` function from **dplyr** (part of **tidyverse**)
+being masked by the `select` function from one of the annotation packages. This
+will have happened because the annotation package was loaded after the
+**tidyverse**. You can either restart your R session and reload the required
+packages, this time being sure to load **tidyverse** last, or just use
+`dplyr::select` to explicitly use the `select` function from **dplyr**:
+
+```{r maskingSolutino, eval = FALSE}
+annot <- annotations %>%
+  dplyr::select(gene_id, gene_name, entrezid) %>%
+  dplyr::filter(gene_id %in% rownames(res_d11))
+```
+:::
+
+
+### Missing annotations
+
+Let's inspect the annotation.
+
+```{r inspectAnnot}
+head(annot)
+
+length(annot$entrezid)
+length(unique(annot$entrezid))
+sum(is.na(annot$entrezid)) # Why are there NAs in the ENTREZID column?
+```
+
+There nearly 3000 genes with missing Entrez IDs.
+Gene/transcript/protein IDs mapping between different databases not always
+perfect. 
+
+Although the majority of IDs map between databases, a small subset may not have
+matching ID or may have more than one match. 
+This is because feature identification algorithms, naming methodologies and
+versions may differ among databases. For instance NCBI and HGNC give same ID
+for different gene versions, whereas Ensembl assigned separate IDs for gene
+versions. Read this interesting discussion on
+[biostars](https://www.biostars.org/p/119540/).
+
+There are some Ensembl IDs with no EntrezID. These gene ids has no 
+corresponding Entrez ID in the `EnsDb` database package. The 
+Ensembl and Entrez databases don't match on a 1:1 level although they have 
+started taking steps towards consolidating
+[in recent years](https://m.ensembl.org/info/genome/genebuild/mane.html).
+
+## Duplicated annotations
+
+In addition to the missing Entrez, there are number of cases in which multiple
+Ensembl IDs map to the same Entrez ID.
+
+```{r inspectAnnotdup}
+dup_entrez <- annot %>%
+  filter(!is.na(entrezid)) %>%
+  add_count(entrezid) %>%
+  arrange(entrezid) %>%
+  filter(n > 1)
+head(dup_entrez)
+```
+
+In this case many of these genes also have the same gene name and description,
+in these cases they lie on patches or haplotypes, for more information see this
+video:
+
+https://www.youtube.com/watch?v=sPE9j_Hw9HU
+
+These duplicates could cause problems with downstream analysis and should be
+resolved. Often there are not many of these and they can be manually checked and
+resolved by looking at the gene annotations online, based on which you can make
+a decision about keeping the annotation or removing one or all of the
+duplicates. Another option for resolving duplicates is to keep the one with the
+highest count in the DESeq2 results. There is no ideal solution here and it is
+up to the researcher to decide what to do.
+
+
+## Annonating our results
+
+To ensure everyone is working with same annotation, we have created an annotation table.
+
+In this case we used the `biomaRt` package to download annotations directly from
+Ensembl. In this cases we can get additional columns, but will also sometimes get
+one-to-many relationships, where one Ensembl ID maps to multiple Entrez IDs. This
+sort of problem is common when mapping between annotation sources, but they have
+already been dealt with for us in AnnotationHub. If we wanted more control over
+this we would need to manually curate these one-to-many relationships ourselves.
+
+In annotation table below we have modified the column names and dealt with the
+one-to-many/missing issues for Entrez IDs. The code we used for doing this is
+available in the [extended materials section](S6_Annotation_With_BioMart.html).
+
+We will load out pre-created annotation table, and then combine it with our
+results table.
+
+```{r addAnnotation, message=FALSE}
+ensembl_annot <- readRDS("preprocessed/r_objects/ensembl_annotations.rds")
+colnames(ensembl_annot)
+res_d11_annot <- as.data.frame(res_d11) %>% 
+    rownames_to_column("GeneID") %>% 
+    left_join(ensembl_annot, "GeneID")
+```
+
+Finally we can output the annotation DE results using `write_tsv()`:
+
+```{r outputDEtables, eval=FALSE}
+write_tsv(res_d11_annot, "results/res_d11_annotated.tsv")
+```
+

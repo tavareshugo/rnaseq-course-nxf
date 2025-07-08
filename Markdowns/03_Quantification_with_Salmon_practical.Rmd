@@ -52,8 +52,8 @@ a few extras.
 
 Salmon encompasses both alignment and quantification in a single tool. Here we
 will be aligning directly to the transcriptome rather than the genome. The transcriptome
-reference is a fasta file containing sequences for all transcripts. Before we
-can run `Salmon` we need to create an index, that allows the Salmon to process the 
+reference is a FASTA file containing sequences for all transcripts. Before we
+can run `salmon` we need to create an index, which allows Salmon to process the 
 sequences more efficiently. For
 common species is possible to [download](http://refgenomes.databio.org/)
 pre-generated Salmon indexes, however, it is worth knowing how to create your
@@ -65,7 +65,7 @@ The details of the index creation are taken from:
 https://combine-lab.github.io/alevin-tutorial/2019/selective-alignment/
 
 As well as including the transcriptome, we also want to include the genomic
-sequences. These will act as a *decoy* so that non-transcriptomic reads will not
+sequences. These will act as *decoys* so that non-transcriptomic reads will not
 be erroneously counted against transcripts.
 
 The indexing takes too long with the full transcriptome for the purposes of this
@@ -76,15 +76,40 @@ The full transcriptome has been downloaded from Ensembl:
 
 ftp://ftp.ensembl.org/pub/release-102/fasta/mus_musculus/cdna/Mus_musculus.GRCm38.cdna.all.fa.gz
 
+Note: This release is a few years old now, in reality you would want to use the
+latest release. We will update the course materials in the future to use the 
+latest release, but the overall process will be the same.
+
+
 ### Indexing the transcriptome
-
 We are going to be giving Salmon both genomic and transcriptomic sequences to
-index. First we need to create a single fasta file that contains both sets of 
-sequences. It is important to have the transcriptome sequences first in the file.
+index. These files will be in FASTA format. FASTA is a text-based format for
+representing either nucleotide sequences or peptide sequences, in which
+nucleotides or amino acids are represented using single-letter codes. Each
+sequence has a header line that starts with ">". The header includes the name of
+the sequence and possibly some information about the sequence. The sequence
+itself is represented by one or more lines containing a string of nucleotides or
+amino acids.
 
-The genomic sequences are the *decoys* and we need a file that lists
-these so that Salmon will know which are which. In out case we are just using
-chr14, so we just need to create a file containing this.
+First we need to combine the transcriptome and genome files into a single FASTA
+file.  It is important to have the transcriptome sequences first in the file.
+
+The genomic sequences are included as *decoys*. The reason for including them is
+that there may be reads in our library that did not originate from transcripts
+in our references (either they are from transcripts that have not been annotated
+or they are from genomic DNA). All aligners will always try to find an aligment
+for a read if it is possible. If we only provided the transcript sequences,
+some of these reads might adequately match the sequence of some transcripts and be
+inappropriately aligned to these transcripts.  However, these reads will always
+align better to their correct genomic sequences than to the transcript, and so
+including the genomic sequences as decoys means that these reads will be aligned
+to the genomic sequences instead.
+
+In order that Salmon can distinguish between transcript sequences and the
+*decoys*, we need a text file that lists the names of the decoy sequences. In
+our case we are just using chromosome 14, so we just need to create a file
+containing this.  Normally this file would contain the names of all the decoy
+sequences.
 
 Finally, we will need to provide salmon with the name of a directory in which to 
 create the index. We don't need to make the directory, salmon will do this
