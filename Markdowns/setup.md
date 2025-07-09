@@ -181,5 +181,6 @@ BiocManager::install(c("AnnotationDbi",
                        "rtracklayer", 
                        "shape", 
                        "tidyverse", 
-                       "tximport"))
+                       "tximport",
+                       "ashr"))
 ```
