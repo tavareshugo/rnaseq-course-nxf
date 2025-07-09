@@ -117,7 +117,7 @@ The **command line software** used in data pre-processing can be installed using
 
 ```bash
 mamba create --name rnaseq
-mamba install --name rnaseq picard salmon fastqc
+mamba install --name rnaseq picard salmon fastqc multiqc samtools
 ```
 
 
