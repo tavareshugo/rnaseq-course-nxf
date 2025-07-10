@@ -209,7 +209,7 @@ Another visualisation that can be nice to try is the `emapplot` which shows the 
 ```{r emap, fig.height=8, fig.width=8}
 library(enrichplot)
 ego_pt <- pairwise_termsim(ego)
-emapplot(ego_pt, cex.params = list(category_label = 0.8))
+emapplot(ego_pt)
 ```
 
 
