@@ -250,10 +250,10 @@ dotplot(go_results, font.size = 14)
 
 Another visualisation that can be nice to try is the `emapplot()` which shows the overlap between genes in the different GO terms.
 
-```{r emap}
+```{r emap, fig.width=8, fig.height=8}
 library(enrichplot)
 ego_pt <- pairwise_termsim(go_results)
-emapplot(ego_pt, cex_label_category = 0.25)
+emapplot(ego_pt)
 ```
 
 
