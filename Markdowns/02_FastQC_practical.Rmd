@@ -70,7 +70,7 @@ Note that the output directory must already exist, FastQC will not create it.
 **1.** 
 
 * Check the location of your current directory using the command `pwd`.
-* If your current directory is not `Course_Materials`, then navigate to the **Course_Materials** directory using the `cd` (**c**hange **d**irectory) command: `cd ~/Course_Materials`
+* If your current directory is not `Course_Materials/week1_bulk/course_bulk`, then navigate to the **Course_Materials** directory using the `cd` (**c**hange **d**irectory) command: `cd ~/Course_Materials/week1_bulk/course_bulk`
 
 **2.** 
 
@@ -109,7 +109,7 @@ This suggests we are in our home directory (our username was "ubuntu").
 So, we need to navigate to our "Course_Materials" directory with: 
 
 ```bash
-cd ~/Course_Materials
+cd ~/Course_Materials/week1_bulk/course_bulk
 ```
 
 **2.**

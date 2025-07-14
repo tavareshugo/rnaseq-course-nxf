@@ -1754,7 +1754,7 @@ nextflow run nf-core/rnaseq \
 <p>We also added a shebang (<code>#!/bin/bash</code>), which is good practice when writing shell scripts and commented our code.</p>
 <hr />
 <p><strong>Question 3</strong></p>
-<p>From the code above we can see that the path to the input samplesheet is given <em>relative</em> to our project folder: <code>data/samplesheet</code>. Therefore, when we launch our script, we should make sure to be in that folder (rather than, for example, inside the scripts folder itself). In our training machines, this is located in <code>cd ~/Course_Materials</code>.</p>
+<p>From the code above we can see that the path to the input samplesheet is given <em>relative</em> to our project folder: <code>data/samplesheet</code>. Therefore, when we launch our script, we should make sure to be in that folder (rather than, for example, inside the scripts folder itself). In our training machines, this is located in <code>cd ~/Course_Materials/week1_bulk/course_bulk</code>.</p>
 <p>Then, from that folder, we can run our script using:</p>
 <pre class="bash"><code>bash scripts/01-rnaseq_workflow.sh</code></pre>
 <p>As the workflow start to run, we get several messages printed to the screen:</p>

@@ -26,7 +26,7 @@ data, such as boxplots and heatmaps.
 | Time|Topic|Links|
 |----:|-----|:----|
 |15 min|**Welcome!**||
-|30 min|**Introduction to RNAseq Methods** |[Slides](01_Introduction_to_RNAseq_Methods.html)|
+|30 min|**Introduction to RNAseq Methods** |[Slides](https://docs.google.com/presentation/d/1sMQvlO477PC1FFmNKBluXio-3xozIgFGkQOJaD6YEu4/edit?usp=sharing)|
 |45 min|**Raw read file format and QC** |[Slides](02_FastQC_introduction.html)<br>[Practical](02_FastQC_practical.html)|
 |2 h 30 min|**Alignment and Quantification of Gene Expression with Salmon** |[Slides](03_Quantification_with_Salmon_introduction.html)<br>[Practical](03_Quantification_with_Salmon_practical.html)|
 |2 h 30 min|**Automated RNA-seq Workflows & Quality Control** |[Slides](04b_nextflow_rnaseq_introduction.html)<br>[Practical](04b_nextflow_rnaseq_practical.html)|

@@ -224,7 +224,7 @@ We also added a shebang (`#!/bin/bash`), which is good practice when writing she
 
 From the code above we can see that the path to the input samplesheet is given _relative_ to our project folder: `data/samplesheet`. 
 Therefore, when we launch our script, we should make sure to be in that folder (rather than, for example, inside the scripts folder itself). 
-In our training machines, this is located in `cd ~/Course_Materials`. 
+In our training machines, this is located in `cd ~/Course_Materials/week1_bulk/course_bulk`. 
 
 Then, from that folder, we can run our script using: 
 
