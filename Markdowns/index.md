@@ -31,7 +31,7 @@ data, such as boxplots and heatmaps.
 |2 h 30 min|**Alignment and Quantification of Gene Expression with Salmon** |[Slides](03_Quantification_with_Salmon_introduction.html)<br>[Practical](03_Quantification_with_Salmon_practical.html)|
 |2 h 30 min|**Automated RNA-seq Workflows & Quality Control** |[Slides](04b_nextflow_rnaseq_introduction.html)<br>[Practical](04b_nextflow_rnaseq_practical.html)|
 |2 h 30 min|**Data Exploration in R**|[Slides](05_Data_Exploration_slides.html)<br>[Practical](05_Data_Exploration.html)|
-|2 h|**Statistical Analysis of Bulk RNAseq Data**|[Slides]()|
+|2 h|**Statistical Analysis of Bulk RNAseq Data**|[Slides](https://docs.google.com/presentation/d/1OITq1sBMxYAB6YFICQgL90YuvwObtS2Tu1RdLegbVv4/edit?usp=sharing)|
 |1 h 30 min|**Differential Expression for RNA-seq**|[Practical](08_DE_analysis_with_DESeq2.html)|
 |1 h 00 min|**Annotation of RNA-seq results**|[Practical](09_Annotation.html)|
 |1 h 30 min|**Visualisation of RNA-seq results**|[Practical](10_Data_Visualisation.html)|
